@@ -7,7 +7,10 @@
   var el = J.el;
   document.querySelectorAll(".js-only").forEach(function (n) { n.hidden = false; });
 
-  var MODELS = [4, 12, 27, 70, 120, 400], BITS = 16, chosen = 27;
+  var MODELS = [4, 12, 27, 70, 120, 400, 2000], BITS = 16, chosen = 27;
+  /* ILLUSTRATIVE ASSUMPTION: the makers of the leading hosted ("frontier") models do not publish
+     their sizes. 2,000 billion (2 trillion) is used only to show the scale involved. */
+  var FRONTIER = 2000;
   var SYMBOL = { spare: "✓ ", tight: "! ", no: "✕ " };
 
   var picker = el("fieldset", { style: "border:0;padding:0;margin:0" }, [
@@ -18,7 +21,7 @@
     var input = el("input", { type: "radio", name: "model", value: String(m) });
     if (m === chosen) input.checked = true;
     input.addEventListener("change", function () { chosen = m; draw(); });
-    seg.appendChild(el("label", {}, [input, m + "B"]));
+    seg.appendChild(el("label", {}, [input, m === FRONTIER ? "2,000B (frontier scale, assumed)" : m + "B"]));
   });
   picker.appendChild(seg);
   var sum = el("p", { "class": "readout", role: "status" });
@@ -51,7 +54,11 @@
 
   function draw() {
     var size = E.sizeGb(chosen, BITS);
-    sum.textContent = chosen + " billion parameters × " + BITS + " bits ÷ 8 = " + E.showGb(size);
+    sum.textContent = "";
+    sum.appendChild(document.createTextNode(chosen.toLocaleString("en-GB") + " billion parameters × " + BITS + " bits ÷ 8 = " + E.showGb(size)));
+    if (chosen === FRONTIER) sum.appendChild(el("span", { "class": "small", style: "display:block;margin-top:.3em", text:
+      "An assumption for illustration: the makers of the leading hosted models do not publish their sizes. One copy at this size is beyond every machine here, and a vendor runs many copies at once to serve its customers."
+    }));
     rows.forEach(function (row) {
       var mem = row.rung.memory.gb, f = E.fit(size, mem), pct = Math.min(100, size / mem * 100);
       row.fill.style.width = pct + "%";
@@ -64,6 +71,10 @@
         : "Uses " + Math.round(size / mem * 100) + "% of memory" + (f === "tight" ? ", leaving too little working space." : ".");
       if (row.rung.memory.fastGb && f !== "no") {
         note += size > row.rung.memory.fastGb ? " It spills past the dashed line into this machine’s slower memory." : " It sits within the fast GPU memory, left of the dashed line.";
+      }
+      if (f === "no" && row.rung.n === 5) {
+        var need = Math.ceil(size * E.HEADROOM / mem);
+        note += " One copy would need " + (need === 2 ? "two" : need) + " of these servers working together.";
       }
       if (row.rung.ordinary && f !== "no") note += " But this is ordinary memory, not GPU memory, so the model would write slowly.";
       row.result.appendChild(document.createTextNode(note));
