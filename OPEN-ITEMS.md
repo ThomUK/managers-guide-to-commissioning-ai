@@ -1,0 +1,14 @@
+# Open items for the owner
+
+1. **Own measurements.** If you have measured tokens per second, concurrency and power draw from your own hardware, they should replace the published figures for rung 1 (SPEC 7.4).
+2. **Deskside workstation UK price.** No UK list price was found for rung 3. A UK reseller quote would replace the converted figure.
+3. **VAT assumptions.** All prices are shown inc VAT. Several sellers did not state their basis and were assumed to be ex VAT (marked in SPEC section 7 and in the data files); confirm these against the seller pages.
+4. **Top-rung benchmark.** No published inference benchmark for an 8 × B300 server was found. The 8 × B200 comparison (S29) is used as the nearest evidence.
+5. **Vendor naming.** Confirm you are content for named products to appear in the price tables.
+6. **Course title.** Agreed: "Just Enough AI: A Manager's Guide to Commissioning AI Capability". Short form: "Just Enough AI".
+
+## Raised during the build
+
+7. **Batching figure (SPEC 7.4, source S24).** The spec says 10 users got "about 7 tokens/s each, 58 tokens/s in total"; these do not agree (7 × 10 = 70). Only the 58 total is used. Check S24 and correct `data/hardware.js` (`batch10`).
+8. **H100 worked example rate.** The £2.68 an hour used in the module 2 rented-GPU example is not in any table; it is shown as "a mid-range" rate within the sourced £1.77 to £3.54 range.
+9. **Estimator simplifications (SPEC 7.7).** Single-user speed readouts are capped at "100+"; rung 2 is treated as adding capacity, not speed; rung 3 uses its fast bandwidth only when the model fits in its 252 GB of GPU memory.

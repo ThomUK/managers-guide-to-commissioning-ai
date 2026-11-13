@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossary — Just Enough AI</title>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body data-root="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="index.html">Just Enough AI</a>
+  <span class="small"><a href="glossary.html">Glossary</a> &middot; <a href="sources.html">Sources</a></span>
+</header>
+<div class="layout single">
+  
+  <main id="main">
+    <p class="eyebrow"><a href="index.html">Contents</a></p>
+    <h1>Glossary</h1>
+    <p>Each term has one sentence in plain English and, where it helps, one more sentence of precision.</p>
+    <dl class="glossary">
+      <dt id="llm">LLM (large language model)</dt>
+      <dd>A computer program that produces text by repeatedly predicting the next small piece of text. What it learned in training is held as billions of numbers.</dd>
+      <dt id="token">Token</dt>
+      <dd>A small piece of text, often a word or part of a word, that a model reads or writes as one unit. As a rule of thumb, a token is about three-quarters of an English word.</dd>
+      <dt id="context-window">Context window</dt>
+      <dd>The amount of text a model can take into account at once, counted in tokens. It holds the instructions, the conversation so far and any documents supplied.</dd>
+      <dt id="training">Training</dt>
+      <dd>The one-off process, done by the model’s maker, of setting the model’s numbers by showing it very large amounts of text.</dd>
+      <dt id="inference">Inference</dt>
+      <dd>Using a trained model to produce an answer. Every prompt you send is inference; it does not change the model.</dd>
+      <dt id="parameter">Parameter (weight)</dt>
+      <dd>One of the numbers inside a model that were set during training. “27B” means 27 billion parameters.</dd>
+      <dt id="open-weights">Open weights</dt>
+      <dd>A model whose file of numbers is published, so that anyone can download it and run it on their own hardware. Licence terms still apply.</dd>
+      <dt id="api">API</dt>
+      <dd>A way for one piece of software to use another; here, your software sending text to a vendor’s model and getting text back. API use is usually paid for per token.</dd>
+      <dt id="gpu">GPU</dt>
+      <dd>A processor that does a very large number of simple calculations at the same time, which is what running a model needs. The letters stand for graphics processing unit, after its original use.</dd>
+      <dt id="cpu">CPU</dt>
+      <dd>The general-purpose processor in every computer, with a small number of powerful cores. It can run a model, but usually far more slowly than a GPU.</dd>
+      <dt id="memory">Memory (RAM / GPU memory)</dt>
+      <dd>The fast working storage a model must be loaded into before it can run. RAM serves the CPU and GPU memory serves the GPU; some machines share one pool, called unified memory.</dd>
+      <dt id="memory-bandwidth">Memory bandwidth</dt>
+      <dd>How quickly data can be moved from memory to the processor, measured in gigabytes per second.</dd>
+      <dt id="prompt-processing">Prompt processing (prefill)</dt>
+      <dd>The first phase of a response, in which the model reads the whole prompt in one go. Engineers call this prefill.</dd>
+      <dt id="token-generation">Token generation (decode)</dt>
+      <dd>The second phase of a response, in which the model writes the answer one token at a time. Engineers call this decode.</dd>
+      <dt id="time-to-first-token">Time to first token</dt>
+      <dd>The wait between sending a prompt and seeing the first piece of the answer.</dd>
+      <dt id="tokens-per-second">Tokens per second</dt>
+      <dd>How fast a model writes its answer once it has started.</dd>
+      <dt id="kv-cache">KV cache</dt>
+      <dd>The model’s working notes on the text it has already read, kept so that it does not have to re-read it for every new token. It takes memory and grows with the length of the conversation.</dd>
+      <dt id="prompt-caching">Prompt caching</dt>
+      <dd>A provider keeping its notes on a prompt it has seen before, so that it can reuse them. Cached input is usually priced lower.</dd>
+      <dt id="agent">Agent</dt>
+      <dd>An AI system that uses a model in a loop to carry out a task by using tools, rather than only replying with text.</dd>
+      <dt id="tool">Tool</dt>
+      <dd>Something a model has been connected to that lets it fetch information or take an action, such as searching files or sending an email.</dd>
+      <dt id="permission">Permission</dt>
+      <dd>A setting that controls whether an agent may use a tool freely, must ask first, or may not use it at all.</dd>
+      <dt id="rag">RAG (retrieval-augmented generation)</dt>
+      <dd>Finding the most relevant passages in your documents and giving them to the model along with the question.</dd>
+      <dt id="fine-tuning">Fine-tuning</dt>
+      <dd>Further training of an existing model on your own examples, which changes its numbers. It suits changes of behaviour and style better than adding facts.</dd>
+      <dt id="dense-model">Dense model</dt>
+      <dd>A model that uses all of its parameters for every token.</dd>
+      <dt id="moe">MoE (mixture of experts)</dt>
+      <dd>A model built from many specialist groups of parameters, of which only a few are used for each token.</dd>
+      <dt id="active-parameters">Active parameters</dt>
+      <dd>The number of parameters an MoE model actually uses for each token. Active parameters decide speed; total parameters decide whether the model fits in memory.</dd>
+      <dt id="quantisation">Quantisation</dt>
+      <dd>Storing each of a model’s numbers less precisely, so that the model is smaller and faster at a small cost in quality.</dd>
+      <dt id="bit">Bit</dt>
+      <dd>The smallest unit of computer storage: one yes-or-no. A number stored in 16 bits is more precise than one stored in 4.</dd>
+      <dt id="batching">Batching (concurrency)</dt>
+      <dd>Serving several users’ requests in the same pass through the model. Each user slows a little while total output rises a lot.</dd>
+    </dl>
+    <footer class="page-footer">
+      <p>Figures checked 13 November 2026. <a href="sources.html">Sources and how prices are shown</a>.</p>
+    </footer>
+  </main>
+</div>
+<script src="data/modules.js"></script>
+<script src="data/glossary.js"></script>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>
