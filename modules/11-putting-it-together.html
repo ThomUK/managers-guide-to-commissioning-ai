@@ -21,15 +21,99 @@
     </ul>
   </nav>
   <main id="main">
-    <p class="eyebrow"><span>Module 11</span><span>about 5 minutes</span><span class="part">Part B: Running it</span></p>
+    <p class="eyebrow"><span>Module 11</span><span>about 5 minutes</span><span class="part">Part B: Running it (what a technical team weighs up when AI runs on hardware you control)</span></p>
     <h1>Putting it together</h1>
     <p class="need"><strong>You need this if</strong> you want to turn the course into questions for a real decision.</p>
-    <p class="part-note">This module has not been built yet.</p>
+
+    <div class="key-idea" id="key-idea">
+      <span class="label">The key idea</span>
+      <p>Every choice in this course is a trade between capability, speed, cost and control. You do not need to make the technical trade-offs yourself. You need to know they exist and what to ask.</p>
+    </div>
+
+    <figure class="visual" id="explorer" aria-label="A sizing explorer. Choose a model size, whether it is dense or MoE, its precision and a machine from the hardware ladder. It reports whether the model fits, a rough single-user speed, the purchase price, the power drawn and an indicative yearly electricity cost.">
+      <p class="part-note" style="border-left-color:var(--warn);margin-top:0"><strong>Order-of-magnitude guide for conversation with your technical team. Not a procurement tool.</strong></p>
+      <p class="instruction js-only" hidden>Change any setting. The results at the top update as you go.</p>
+      <div id="explorer-body"></div>
+      <noscript><p class="small muted">This interactive picture needs JavaScript. It combines the rules from modules 6 to 10: size is parameters &times; bits &divide; 8; the model must fit in memory with 15% to spare; speed depends on memory bandwidth and on how much is read per token.</p></noscript>
+      <figcaption><strong>What this shows:</strong> how model size, model type, precision and machine combine into fit, speed and cost.</figcaption>
+      <p class="stamp">Speeds are a <strong>rough estimate</strong> from a simple teaching formula; real speed depends on software and settings. Prices, memory and power: sources <a href="../sources.html#S9">S9</a> to <a href="../sources.html#S19">S19</a>; electricity is an illustration at 30p per kWh including VAT, running continuously (<a href="../sources.html#S22">S22</a>, <a href="../sources.html#S23">S23</a>). Checked 13 November 2026.</p>
+    </figure>
+
+    <h2 id="four-trades">Four things being traded</h2>
+    <p><strong>Capability</strong> is how good the answers are: larger models are generally better. <strong>Speed</strong> is how long people wait. <strong>Cost</strong> is what you pay, whether per seat, per token, per hour or up front. <strong>Control</strong> is where your data goes and who can change what the system does.</p>
+    <p>You rarely get more of one without giving up some of another. A bigger model is more capable, and slower and dearer to run. Running it yourself gives control, and takes on cost and effort. An agent that acts without asking is faster, and gives up some control.</p>
+    <p>Each part of this course looked at some of these trades. Part A was about using AI: what a model is doing (module 1), who owns what (module 2), what an agent may touch (modules 3 and 4) and the cheapest route to better results (module 5). Part B was about running it: whether a model fits (module 6), why it is fast or slow (modules 7 and 8) and the two ways of getting more from one machine (modules 9 and 10). The explorer above puts Part B in one place. Try a model that does not fit, then lower its precision.</p>
+
+    <h2 id="run-it-ourselves">Do we need to run it ourselves at all?</h2>
+    <p>This is the first question, and for most organisations and most uses the answer is no. The path below starts there.</p>
+
+    <figure class="visual" id="path" aria-label="A decision path. First question: do any of four drivers apply: data that cannot leave, high steady volume, the need for a specific open model, or resilience? If no, use a vendor's service: a chat subscription or API access. If yes, ask whether the need is steady enough to keep a machine busy or the data must stay on site. If no, rent a cloud GPU. If yes, buy your own hardware.">
+      <ol class="path">
+        <li>
+          <p class="flow-q">1. Does any of these apply?</p>
+          <ul>
+            <li>Data that cannot leave your organisation</li>
+            <li>High, steady volume that makes per-token prices add up</li>
+            <li>A need for one specific open model</li>
+            <li>Resilience: it must work if a vendor&rsquo;s service does not</li>
+          </ul>
+          <div class="path-end zone-theirs">
+            <span class="zone-tag">No: use a vendor&rsquo;s service</span>
+            <strong>Chat subscription</strong> for staff, or <strong>API access</strong> for your own software. Modules that matter: <a href="02-local-vs-cloud.html">2</a>, <a href="03-chat-vs-agent.html">3</a>, <a href="04-ai-assisted-coding.html">4</a> and <a href="05-improving-results.html">5</a>.
+          </div>
+        </li>
+        <li>
+          <p class="flow-q">2. If yes: must the data stay on your own site, or will the machine be kept busy most of the time?</p>
+          <div class="path-end zone-mixed">
+            <span class="zone-tag">No: rent</span>
+            <strong>Open model on a rented cloud GPU.</strong> Modules that matter: <a href="02-local-vs-cloud.html">2</a>, <a href="06-what-a-model-is.html">6</a>, <a href="07-how-a-response-is-made.html">7</a> and <a href="08-hardware-and-performance.html">8</a>.
+          </div>
+          <div class="path-end zone-yours">
+            <span class="zone-tag">Yes: own</span>
+            <strong>Open model on your own hardware.</strong> Modules that matter: <a href="02-local-vs-cloud.html">2</a> and <a href="06-what-a-model-is.html">6</a> to <a href="10-quantisation.html">10</a>.
+          </div>
+        </li>
+      </ol>
+      <figcaption><strong>What this shows:</strong> a short route from &ldquo;do we need to run it ourselves?&rdquo; back to the four arrangements in <a href="02-local-vs-cloud.html">module 2</a>.</figcaption>
+    </figure>
+
+    <div class="decisions" id="questions">
+      <h2>Questions to ask</h2>
+      <h3>About any AI product</h3>
+      <ul>
+        <li>Who owns the model? Who owns the GPU? How do we pay? Where does our data go?</li>
+      </ul>
+      <h3>About an agent</h3>
+      <ul>
+        <li>What can it read? What can it change? What needs approval? What is logged?</li>
+      </ul>
+      <h3>About results</h3>
+      <ul>
+        <li>Have we tried prompting and RAG before anything more expensive? How will we know it improved?</li>
+      </ul>
+      <h3>About hardware</h3>
+      <ul>
+        <li>Which model, at what precision, for how many people at once, at what speed, drawing how much power, hosted where?</li>
+      </ul>
+      <p class="no-print js-only" hidden><button type="button" class="btn secondary" id="print-card">Print this card</button></p>
+    </div>
+
+    <details class="detail" id="detail">
+      <summary>The detail your technical team handles <span class="tag">optional</span></summary>
+      <div class="detail-body">
+        <h3 id="detail-recap">How modules 6 to 10 connect</h3>
+        <p>A model is a file of numbers that must fit in fast memory, with room to spare (module 6). A response is made in two phases: the prompt is read in one go, then the answer is written one token at a time, with the KV cache holding the model&rsquo;s notes (module 7). Writing speed is set by memory bandwidth, because each token needs the weights to flow from memory to the processor once (module 8). There are then two ways to get more from the same machine. A mixture-of-experts model reads only part of itself for each token, which helps speed but not fit (module 9). Quantisation stores every number less precisely, which helps both fit and speed at some cost in quality (module 10). The sizing explorer above is those five ideas in one place.</p>
+      </div>
+    </details>
+
+    <p>That is the end of the course. Go back to the <a href="../index.html">contents page</a>, or look up a term in the <a href="../glossary.html">glossary</a>.</p>
+
     <nav class="pager" aria-label="Previous and next module">
       <a class="prev" href="10-quantisation.html"><span>Previous</span>10. Quantisation</a>
       <a class="contents" href="../index.html">Contents</a>
-      
+      <span></span>
     </nav>
+
     <footer class="page-footer">
       <p>Figures checked 13 November 2026. <a href="../sources.html">Sources and how prices are shown</a>.</p>
     </footer>
@@ -37,7 +121,9 @@
 </div>
 <script src="../data/modules.js"></script>
 <script src="../data/glossary.js"></script>
-
+<script src="../data/hardware.js"></script>
+<script src="../assets/js/estimate.js"></script>
 <script src="../assets/js/site.js"></script>
+<script src="../assets/js/visuals/m11.js"></script>
 </body>
 </html>

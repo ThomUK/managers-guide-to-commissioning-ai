@@ -21,15 +21,77 @@
     </ul>
   </nav>
   <main id="main">
-    <p class="eyebrow"><span>Module 9</span><span>about 5 minutes</span><span class="part">Part B: Running it</span></p>
+    <p class="eyebrow"><span>Module 9</span><span>about 5 minutes</span><span class="part">Part B: Running it (what a technical team weighs up when AI runs on hardware you control)</span></p>
     <h1>Dense vs. MoE models</h1>
-    <p class="need"><strong>You need this if</strong> you see a model described like “35B-A3B” or hear “mixture of experts”.</p>
-    <p class="part-note">This module has not been built yet.</p>
+    <p class="need"><strong>You need this if</strong> you see a model described like &ldquo;35B-A3B&rdquo; or hear &ldquo;mixture of experts&rdquo;.</p>
+    <p class="relies"><strong>Relies on</strong> <a href="08-hardware-and-performance.html">module 8</a>: each token written needs the model&rsquo;s weights to flow from memory to the processor once.</p>
+
+    <div class="key-idea" id="key-idea">
+      <span class="label">The key idea</span>
+      <p>A dense model uses all of its numbers for every token. A mixture-of-experts (MoE) model keeps many specialist groups and consults only a few for each token. It still has to fit in memory in full, but it writes much faster.</p>
+    </div>
+
+    <figure class="visual" id="lighting" aria-label="Two grids of model weights writing the same sentence one token at a time. In the dense model the whole grid lights up for every token. In the MoE model the grid is divided into twelve expert blocks, and a router lights only two of them for each token. Both need the same memory, but the MoE model reads far less per token and so writes faster.">
+      <p class="instruction js-only" hidden>Press Play or Step, and watch how much of each grid lights up for every token.</p>
+      <div id="lighting-body"></div>
+      <noscript><p class="small muted">This interactive picture needs JavaScript. It shows two models of the same total size writing the same sentence. The dense model uses every weight for every token; the MoE model uses only two of its twelve expert blocks each time.</p></noscript>
+      <figcaption><strong>What this shows:</strong> both models take the same memory. The MoE model reads a small part of itself for each token, so far less has to flow through the pipe.</figcaption>
+      <p class="stamp"><span class="illus">Illustrative.</span> Twelve experts with two chosen is a simplification. Speeds are a <strong>rough estimate</strong> for the desk-sized machine, from the formula in module 8; real speed depends on software and settings. Machine figures: source <a href="../sources.html#S9">S9</a>, checked 13 November 2026.</p>
+    </figure>
+
+    <h2 id="two-sizes">Two sizes, two jobs</h2>
+    <p>A <a class="term" href="../glossary.html#dense-model">dense model</a> has one size. An <a class="term" href="../glossary.html#moe">MoE</a> model has two. Its total parameters decide whether it fits in memory (<a href="06-what-a-model-is.html">module 6</a>), because every expert has to be loaded and ready. Its <a class="term" href="../glossary.html#active-parameters">active parameters</a>, the ones used for any single token, decide how fast it writes (<a href="08-hardware-and-performance.html">module 8</a>).</p>
+    <p>Model names often carry both. &ldquo;35B-A3B&rdquo; means 35 billion parameters in total, of which about 3 billion are active for each token. Where a name gives only one number it is usually the total, so it is worth asking for the other.</p>
+
+    <h2 id="measured">What it buys</h2>
+    <p>On the same desk-sized machine, a dense 27-billion-parameter model wrote about 8 tokens per second <span class="srcref">(<a href="../sources.html#S24">S24</a>)</span>. An MoE model with 35 billion parameters in total and about 3 billion active wrote about 30 <span class="srcref">(<a href="../sources.html#S25">S25</a>)</span>. The two are different models measured at different precisions, so this shows the direction, not an exact ratio. MoE is how many large current models reach a usable speed.</p>
+
+    <h2 id="the-trade">The trade</h2>
+    <p>The speed is not free. An MoE model is generally less capable than a dense model of the same total size, but far more capable than a dense model of its active size. That is a tendency, not a rule.</p>
+    <p>One way to picture it: a hospital with every specialist on site, where each patient sees only the two or three they need. The whole building must be staffed, but each visit is quick. The picture breaks down in one place: a model&rsquo;s experts are not tidy, human-style specialisms. Nobody assigns them subjects, and they cannot be read off like a staff list.</p>
+
+    <div class="decisions" id="decisions">
+      <h2>What this means for your decisions</h2>
+      <ul>
+        <li>Two models with similar &ldquo;size&rdquo; can differ several-fold in speed on the same hardware. Ask whether a model is dense or MoE, and its active size.</li>
+        <li>MoE helps speed, not fit. It does not let a model run on a smaller machine.</li>
+      </ul>
+    </div>
+
+    <details class="detail" id="detail">
+      <summary>The detail your technical team handles <span class="tag">optional</span></summary>
+      <div class="detail-body">
+        <h3 id="detail-router">Routers and top-k selection</h3>
+        <p>Inside each layer of an MoE model, a small component called a router scores every expert for the current token and passes the work to the highest-scoring few. &ldquo;Top-k&rdquo; is the engineers&rsquo; name for &ldquo;the best k of them&rdquo;. Parts of the model outside the expert blocks are still used for every token.</p>
+        <h3 id="detail-loaded">Why all experts must stay loaded</h3>
+        <p>The router chooses afresh for every token, and the choice cannot be known in advance. Any expert may be needed next, so all of them have to sit in fast memory all the time.</p>
+        <h3 id="detail-batching">MoE and batching</h3>
+        <p>When many users share a sweep (<a class="term" href="../glossary.html#batching">batching</a>), their tokens call on different experts, so more of the model is read on each sweep. The speed advantage of MoE over dense therefore narrows somewhat under heavy shared use.</p>
+        <h3 id="detail-caveat">How firm is the capability claim?</h3>
+        <p>The comparison of MoE and dense capability is a general tendency seen across model families. It varies with how each model was trained, so teams compare specific models on their own tasks.</p>
+      </div>
+    </details>
+
+    <div class="check" id="check" data-explain="All 120 billion parameters must be loaded, because any expert may be needed for the next token. The 12 billion active parameters decide how fast it writes.">
+      <h2>Check your understanding</h2>
+      <fieldset>
+        <legend>An MoE model has 120 billion parameters with 12 billion active. Which number decides whether it fits in memory?</legend>
+        <label><input type="radio" name="q9" data-correct> 120 billion.</label>
+        <label><input type="radio" name="q9"> 12 billion.</label>
+        <label><input type="radio" name="q9"> Neither: only the processor matters.</label>
+      </fieldset>
+      <details class="answer">
+        <summary>Show the answer</summary>
+        <p>120 billion.</p>
+      </details>
+    </div>
+
     <nav class="pager" aria-label="Previous and next module">
       <a class="prev" href="08-hardware-and-performance.html"><span>Previous</span>8. Hardware and performance</a>
       <a class="contents" href="../index.html">Contents</a>
       <a class="next" href="10-quantisation.html"><span>Next</span>10. Quantisation</a>
     </nav>
+
     <footer class="page-footer">
       <p>Figures checked 13 November 2026. <a href="../sources.html">Sources and how prices are shown</a>.</p>
     </footer>
@@ -37,7 +99,9 @@
 </div>
 <script src="../data/modules.js"></script>
 <script src="../data/glossary.js"></script>
-
+<script src="../data/hardware.js"></script>
+<script src="../assets/js/estimate.js"></script>
 <script src="../assets/js/site.js"></script>
+<script src="../assets/js/visuals/m09.js"></script>
 </body>
 </html>

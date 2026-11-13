@@ -81,7 +81,7 @@
       if (fit === "no") out.appendChild(el("p", { text: "No speed to show: a model that does not fit does not run." }));
       else if (st.cpu) out.appendChild(el("p", { text: "On a CPU with ordinary memory the pipe is far narrower, so the model writes far more slowly. No estimate is shown, because this course has no sourced bandwidth figure for a typical CPU." }));
       else {
-        out.appendChild(el("p", {}, [el("span", { "class": "big", text: "About " + E.showSpeed(tps) + " tokens per second" }), " for one user (rough estimate)"]));
+        out.appendChild(el("p", {}, [el("span", { "class": "big", text: E.speedPhrase(tps, true) + " tokens per second" }), " for one user (rough estimate)"]));
         if (spills) out.appendChild(el("p", { "class": "small", text: "The model is too big for this machine’s 252 GB of fast GPU memory, so it runs from the slower memory: a big tank with a narrow pipe." }));
         if (tps > E.CAP) out.appendChild(el("p", { "class": "small", text: "Shown as 100+ because at this speed other limits take over, and it is already faster than anyone can read." }));
       }

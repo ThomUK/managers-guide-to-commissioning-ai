@@ -477,6 +477,15 @@ pre.code .ok { color: var(--good); font-weight: 600; }
 .seg-reread { fill: var(--theirs-bg); stroke: var(--theirs-line); stroke-width: .6; }
 .playhead { stroke: var(--text); stroke-width: 2.5; }
 
+dl.kv { display: grid; grid-template-columns: minmax(7.5em, auto) minmax(0, 1fr); gap: .35em .9em; margin: 0; }
+@media (max-width: 699px) { dl.kv { grid-template-columns: minmax(0, 1fr); gap: .1em; } dl.kv dd { margin-bottom: .5em !important; } .chip { white-space: normal; text-align: left; } }
+.path { list-style: none; padding: 0; margin: 0; }
+.path > li { border-left: 4px solid var(--accent); padding: .2em 0 .2em 1em; margin: 0 0 1em; }
+.path-end { border-radius: 8px; padding: .6em .8em; margin: .6em 0 0; font-size: .95rem; }
+.path-end a { color: var(--text); font-weight: 700; }
+#questions h3 { margin: .9em 0 .2em; font-size: 1rem; }
+#questions ul { margin-bottom: .4em; }
+
 /* ---------- Print ---------- */
 @media print {
   .topbar, .sidebar, .pager, .skip, .menu-btn, .stepper, .check .btn, .no-print { display: none !important; }
@@ -487,6 +496,7 @@ pre.code .ok { color: var(--good); font-weight: 600; }
   details.detail::details-content { display: block; content-visibility: visible; height: auto; }
   a { color: inherit; }
   .pop { display: none !important; }
+  body.print-card main > *:not(#questions) { display: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {

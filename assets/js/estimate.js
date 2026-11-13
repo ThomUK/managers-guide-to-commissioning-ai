@@ -48,8 +48,13 @@
     return r.toLocaleString("en-GB") + " GB";
   }
 
+  /* "about 7" or, above the cap, "100+" */
+  function speedPhrase(tps, capital) {
+    return tps > CAP ? CAP + "+" : (capital ? "About " : "about ") + showSpeed(tps);
+  }
+
   var FIT_TEXT = { spare: "Fits with room to spare", tight: "Fits, tight", no: "Does not fit" };
 
   root.JEAI_EST = { HEADROOM: HEADROOM, CAP: CAP, sizeGb: sizeGb, fit: fit, readPerTokenGb: readPerTokenGb,
-    tokensPerSecond: tokensPerSecond, round: round, showSpeed: showSpeed, showGb: showGb, FIT_TEXT: FIT_TEXT };
+    tokensPerSecond: tokensPerSecond, round: round, showSpeed: showSpeed, speedPhrase: speedPhrase, showGb: showGb, FIT_TEXT: FIT_TEXT };
 })(typeof window !== "undefined" ? window : globalThis);

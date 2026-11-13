@@ -21,15 +21,92 @@
     </ul>
   </nav>
   <main id="main">
-    <p class="eyebrow"><span>Module 10</span><span>about 5 minutes</span><span class="part">Part B: Running it</span></p>
+    <p class="eyebrow"><span>Module 10</span><span>about 5 minutes</span><span class="part">Part B: Running it (what a technical team weighs up when AI runs on hardware you control)</span></p>
     <h1>Quantisation</h1>
-    <p class="need"><strong>You need this if</strong> you are told a model has been “quantised” or see labels like “4-bit”, “Q4”, “FP8”.</p>
-    <p class="part-note">This module has not been built yet.</p>
+    <p class="need"><strong>You need this if</strong> you are told a model has been &ldquo;quantised&rdquo; or see labels like &ldquo;4-bit&rdquo;, &ldquo;Q4&rdquo;, &ldquo;FP8&rdquo;.</p>
+    <p class="relies"><strong>Relies on</strong> <a href="06-what-a-model-is.html">module 6</a> (a model must fit in memory) and <a href="08-hardware-and-performance.html">module 8</a> (what flows through the pipe sets the speed).</p>
+
+    <div class="key-idea" id="key-idea">
+      <span class="label">The key idea</span>
+      <p>Quantisation stores each of the model&rsquo;s numbers less precisely. The model gets smaller and faster, at a small cost in quality. It is how large models are made to fit on modest hardware.</p>
+    </div>
+
+    <figure class="visual" id="precision" aria-label="A precision slider with four settings: 16-bit, 8-bit, 4-bit and 2-bit. As precision falls, a row of example numbers is rounded more coarsely, a 120-billion-parameter model shrinks inside a 128 GB memory bar until it fits, the speed gauge rises and the quality gauge falls, slightly at 4-bit and clearly at 2-bit.">
+      <p class="instruction js-only" hidden>Move the slider from 16-bit down to 2-bit and watch the numbers, the memory bar and the two gauges.</p>
+      <div id="precision-body"></div>
+      <noscript><p class="small muted">This interactive picture needs JavaScript. In words: a 120-billion-parameter model needs 240 GB at 16-bit, 120 GB at 8-bit, 60 GB at 4-bit and 30 GB at 2-bit. It fits comfortably on a 128 GB machine only from 4-bit down, and quality falls away below that.</p></noscript>
+      <figcaption><strong>What this shows:</strong> fewer bits per number means coarser numbers, a smaller model and more speed. Quality holds up at first, then falls away.</figcaption>
+      <p class="stamp"><span class="illus">Illustrative:</span> the example numbers and the quality gauge. Size is parameters &times; bits &divide; 8; speed is a <strong>rough estimate</strong> relative to 16-bit. Machine memory: source <a href="../sources.html#S9">S9</a>, checked 13 November 2026.</p>
+    </figure>
+
+    <h2 id="fewer-bits">Fewer bits per number</h2>
+    <p>A <a class="term" href="../glossary.html#bit">bit</a> is one yes-or-no of storage. Each of a model&rsquo;s numbers is normally stored in 16 bits. <a class="term" href="../glossary.html#quantisation">Quantisation</a> stores each one in fewer, commonly 8 or 4. Halving the bits halves the size of the model, and roughly halves what must flow through the pipe for each token, so the model both fits on smaller hardware and writes faster.</p>
+
+    <figure class="visual" id="shades" aria-label="The same abstract pattern drawn four times, with 256, 16, 4 and 2 shades. With fewer shades the pattern becomes blockier, but it stays recognisable until the last.">
+      <div id="shades-body"></div>
+      <figcaption><strong>What this shows:</strong> the same pattern stored with fewer and fewer shades. It survives a surprising amount of coarsening, then suddenly does not.</figcaption>
+      <p class="stamp"><span class="illus">Illustrative.</span> A drawn pattern, to anchor the intuition.</p>
+    </figure>
+
+    <h2 id="cost">What it costs</h2>
+    <p>Generally, an 8-bit model is close to indistinguishable from the original, 4-bit is the common practical choice, and below that quality falls away quickly. These are tendencies, not guarantees.</p>
+    <p>The picture of the pattern helps, up to a point. A coarsened picture looks coarse. A coarsened model can stay fluent while getting subtle things wrong, so the loss has to be measured, not judged by eye.</p>
+    <p>For one 27-billion-parameter model, the 8-bit file was about 29 GB and a 4-bit file about 17 GB <span class="srcref">(<a href="../sources.html#S24">S24</a>)</span>. Real files run a little larger than the simple sum suggests. With 16 people using it at once, the 4-bit version produced about 134 tokens per second in total, against about 104 for 8-bit <span class="srcref">(<a href="../sources.html#S26">S26</a>)</span>.</p>
+
+    <h2 id="who-decides">Who decides</h2>
+    <p>Quantisation is done once, to the model file, before the model is used. Many open models are published in several precisions. Which one to run is the technical team&rsquo;s choice to make, and to test.</p>
+    <p>The same model at a lower precision is still the same model. It has the same knowledge and the same limits, held a little less exactly. That is why quantisation is usually tried before stepping down to a smaller model.</p>
+
+    <div class="decisions" id="decisions">
+      <h2>What this means for your decisions</h2>
+      <ul>
+        <li>&ldquo;Can we run model X on machine Y?&rdquo; often has the answer &ldquo;yes, at 4-bit&rdquo;. Ask what was given up and how it was tested.</li>
+        <li>A quantised large model usually beats an unquantised small one of the same file size, but this needs checking on your own tasks.</li>
+      </ul>
+    </div>
+
+    <details class="detail" id="detail">
+      <summary>The detail your technical team handles <span class="tag">optional</span></summary>
+      <div class="detail-body">
+        <h3 id="detail-formats">Formats an engineer will mention</h3>
+        <ul>
+          <li><strong>FP8:</strong> each number stored as an 8-bit floating-point value.</li>
+          <li><strong>NVFP4:</strong> a 4-bit floating-point format designed for recent NVIDIA GPUs.</li>
+          <li><strong>GGUF Q4:</strong> a 4-bit version of a model in GGUF, a widely used file format for running models on small machines.</li>
+          <li><strong>AWQ:</strong> a method for choosing how to round, usually to 4 bits, that protects the numbers that matter most.</li>
+          <li><strong>INT4:</strong> each number stored as a 4-bit whole number.</li>
+        </ul>
+        <h3 id="detail-hardware">Why some hardware prefers some formats</h3>
+        <p>A processor is fastest with number formats it was built to calculate with directly. A format the hardware does not support natively has to be converted as it runs, which loses some of the speed gain. This is why the best choice of format depends on the machine.</p>
+        <h3 id="detail-kv">Quantising the KV cache</h3>
+        <p>The model&rsquo;s notes on a conversation, the <a class="term" href="../glossary.html#kv-cache">KV cache</a>, can also be stored less precisely. This leaves room for longer conversations or more simultaneous users, with its own small effect on quality.</p>
+        <h3 id="detail-evaluation">Evaluation before and after</h3>
+        <p>The honest way to choose a precision is to run the same set of realistic test questions against each version and compare the answers. Published claims of &ldquo;no loss&rdquo; are usually averages over general benchmarks, and may not hold for a specialised task.</p>
+        <h3 id="detail-sizes">Why real files are larger than the sum</h3>
+        <p>Some parts of a model are usually kept at higher precision because they are sensitive to rounding, and the file carries some extra information. The 4-bit file in the measured example averages about 5 bits per number.</p>
+      </div>
+    </details>
+
+    <div class="check" id="check" data-explain="Going from 16 bits to 4 bits divides the size by four: 54 &divide; 4 is 13.5, so about 14 GB.">
+      <h2>Check your understanding</h2>
+      <fieldset>
+        <legend>A model needs 54 GB at 16-bit. Roughly what does it need at 4-bit?</legend>
+        <label><input type="radio" name="q10"> About 27 GB.</label>
+        <label><input type="radio" name="q10" data-correct> About 14 GB.</label>
+        <label><input type="radio" name="q10"> About 3 GB.</label>
+      </fieldset>
+      <details class="answer">
+        <summary>Show the answer</summary>
+        <p>About 14 GB.</p>
+      </details>
+    </div>
+
     <nav class="pager" aria-label="Previous and next module">
       <a class="prev" href="09-dense-vs-moe.html"><span>Previous</span>9. Dense vs. MoE models</a>
       <a class="contents" href="../index.html">Contents</a>
       <a class="next" href="11-putting-it-together.html"><span>Next</span>11. Putting it together</a>
     </nav>
+
     <footer class="page-footer">
       <p>Figures checked 13 November 2026. <a href="../sources.html">Sources and how prices are shown</a>.</p>
     </footer>
@@ -37,7 +114,9 @@
 </div>
 <script src="../data/modules.js"></script>
 <script src="../data/glossary.js"></script>
-
+<script src="../data/hardware.js"></script>
+<script src="../assets/js/estimate.js"></script>
 <script src="../assets/js/site.js"></script>
+<script src="../assets/js/visuals/m10.js"></script>
 </body>
 </html>
