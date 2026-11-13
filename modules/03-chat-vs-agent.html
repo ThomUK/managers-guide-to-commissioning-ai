@@ -23,13 +23,78 @@
   <main id="main">
     <p class="eyebrow"><span>Module 3</span><span>about 5 minutes</span><span class="part">Part A: Using it</span></p>
     <h1>A chat window vs. an agentic system</h1>
-    <p class="need"><strong>You need this if</strong> someone asks you to approve an AI “agent”, or an AI tool that can take actions.</p>
-    <p class="part-note">This module has not been built yet.</p>
+    <p class="need"><strong>You need this if</strong> someone asks you to approve an AI &ldquo;agent&rdquo;, or an AI tool that can take actions.</p>
+
+    <div class="key-idea" id="key-idea">
+      <span class="label">The key idea</span>
+      <p>A chat window can only say things. An agent can do things, and what it is able to do is set by the tools and permissions you give it.</p>
+    </div>
+
+    <figure class="visual" id="chat-vs-agent" aria-label="The same request handled two ways. On the left, a chat window receives the request and replies with text; nothing else changes. On the right, an agent works in a loop of think, act and observe, using three tools in your systems: read finance system, draft email and send email. Each tool has a permission gate that is open, ask-first or locked.">
+      <p class="instruction js-only" hidden>Set the permission dial, then press Play or Step. With &ldquo;Ask before acting&rdquo; the agent stops and asks you before sending anything.</p>
+      <p><strong>The request:</strong> &ldquo;Find last month&rsquo;s overdue invoices and email a reminder to each customer.&rdquo;</p>
+      <div id="cva-body"></div>
+      <noscript><p class="small muted">This interactive picture needs JavaScript. It steps through the same request handled by a chat window, which only replies with advice, and by an agent, which reads the finance system, drafts emails and, if permitted, sends them.</p></noscript>
+      <figcaption><strong>What this shows:</strong> the same model, given the same request, with and without tools. The gates on the agent&rsquo;s tools decide what it can do without asking.</figcaption>
+      <p class="stamp"><span class="illus">Illustrative.</span> The seven invoices and the agent&rsquo;s wording are made up for this example.</p>
+    </figure>
+
+    <h2 id="tools">What a tool is</h2>
+    <p>On its own, a model can only produce text. A <a class="term" href="../glossary.html#tool">tool</a> is anything the model has been connected to that lets it fetch information or take an action: search a database, read a file, send an email. The model asks for a tool to be used by writing a request in an agreed format. The software around the model carries out the request and passes the result back.</p>
+    <p>A tool that only reads, such as looking up an invoice, is very different from one that acts, such as sending an email or making a payment. Reading can expose information. Acting changes things, and some changes cannot be undone.</p>
+
+    <h2 id="loop">The loop</h2>
+    <p>An <a class="term" href="../glossary.html#agent">agent</a> is a model running in a loop. It thinks about what to do next, acts by using a tool, observes the result, then thinks again. It repeats this until the task is done or it is stopped.</p>
+    <p>This is why an agent takes longer, and uses many more <a class="term" href="../glossary.html#token">tokens</a>, than a single answer. Every turn of the loop is another full request to the model, and each one carries the growing record of everything that has happened so far.</p>
+
+    <h2 id="same-model">Same model, different connections</h2>
+    <p>The model in the chat window and the model in the agent can be exactly the same one. The difference is what it is connected to and what it is allowed to do. A <a class="term" href="../glossary.html#permission">permission</a> is a gate on each tool: open, ask first, or locked. Those gates, far more than how capable the model is, decide what can go wrong.</p>
+
+    <div class="decisions" id="decisions">
+      <h2>What this means for your decisions</h2>
+      <ul>
+        <li>The risk question for an agent is &ldquo;what can it touch, and what can it do without asking?&rdquo;, not &ldquo;how clever is it?&rdquo;</li>
+        <li>Start with read-only and ask-first. Widen permissions for specific, reversible actions.</li>
+        <li>An agent that reads content from outside (web pages, emails, documents) can be steered by instructions hidden in that content. Limit what it can do after reading untrusted material.</li>
+      </ul>
+    </div>
+
+    <details class="detail" id="detail">
+      <summary>The detail your technical team handles <span class="tag">optional</span></summary>
+      <div class="detail-body">
+        <h3 id="detail-tools">Tool definitions and connectors</h3>
+        <p>Each tool is described to the model in a short definition: its name, what it does and what information it needs. Connectors are ready-made sets of tools for a particular system, such as a calendar or a document store. Your team chooses which to install and what account each one acts as.</p>
+        <h3 id="detail-sandboxes">Sandboxes</h3>
+        <p>A sandbox is a sealed-off environment in which an agent can run commands without being able to reach anything else. It limits the damage a mistake can do.</p>
+        <h3 id="detail-logs">Audit logs</h3>
+        <p>A well-run agent records every tool it used, with what inputs and what came back. This is what lets you answer &ldquo;what did it do, and why?&rdquo; afterwards.</p>
+        <h3 id="detail-injection">Prompt injection</h3>
+        <p>A model cannot reliably tell the difference between instructions from you and instructions that appear inside material it is reading. Someone can therefore plant text in a web page, email or document that tells the agent to do something you did not ask for. This is called prompt injection, and the main defence is limiting what the agent is permitted to do, not hoping it will notice.</p>
+        <h3 id="detail-loop-human">Human in the loop, human on the loop</h3>
+        <p>&ldquo;Human in the loop&rdquo; means a person approves each significant action before it happens. &ldquo;Human on the loop&rdquo; means the agent acts by itself while a person monitors and can step in. The second is faster and carries more risk.</p>
+      </div>
+    </details>
+
+    <div class="check" id="check" data-explain="Permission to act without asking removes the point at which a person could catch a mistake. A larger model or a longer context window changes how capable the system is, not what it is allowed to do.">
+      <h2>Check your understanding</h2>
+      <fieldset>
+        <legend>Which change most increases the risk of an AI system?</legend>
+        <label><input type="radio" name="q3"> Using a larger model.</label>
+        <label><input type="radio" name="q3" data-correct> Giving it permission to act without asking.</label>
+        <label><input type="radio" name="q3"> Giving it a longer context window.</label>
+      </fieldset>
+      <details class="answer">
+        <summary>Show the answer</summary>
+        <p>Giving it permission to act without asking.</p>
+      </details>
+    </div>
+
     <nav class="pager" aria-label="Previous and next module">
       <a class="prev" href="02-local-vs-cloud.html"><span>Previous</span>2. Local AI vs. cloud AI</a>
       <a class="contents" href="../index.html">Contents</a>
       <a class="next" href="04-ai-assisted-coding.html"><span>Next</span>4. AI-assisted code development</a>
     </nav>
+
     <footer class="page-footer">
       <p>Figures checked 13 November 2026. <a href="../sources.html">Sources and how prices are shown</a>.</p>
     </footer>
@@ -37,7 +102,7 @@
 </div>
 <script src="../data/modules.js"></script>
 <script src="../data/glossary.js"></script>
-
 <script src="../assets/js/site.js"></script>
+<script src="../assets/js/visuals/m03.js"></script>
 </body>
 </html>

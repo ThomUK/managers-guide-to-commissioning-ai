@@ -231,23 +231,29 @@
     var count = el("span", { "class": "count", role: "status" });
     var bar = el("div", { "class": "stepper" }, [reduced ? null : play, step, restart, count]);
     container.appendChild(bar);
+    function blocked() { return opts.canAdvance ? !opts.canAdvance(i) : false; }
+    function buttons() {
+      var end = i >= total - 1 || blocked();
+      if (end && timer) stop();
+      step.disabled = end;
+      play.disabled = end;
+    }
     function draw() {
       count.textContent = "Step " + (i + 1) + " of " + total;
-      step.disabled = i >= total - 1;
-      play.disabled = i >= total - 1 && !timer;
       opts.onStep(i);
+      buttons();
     }
     function stop() { clearInterval(timer); timer = null; play.textContent = "Play"; }
-    function go(n) { i = Math.max(0, Math.min(total - 1, n)); if (i >= total - 1) stop(); draw(); }
+    function go(n) { i = Math.max(0, Math.min(total - 1, n)); draw(); }
     play.addEventListener("click", function () {
-      if (timer) { stop(); draw(); return; }
+      if (timer) { stop(); return; }
       play.textContent = "Pause";
-      timer = setInterval(function () { go(i + 1); }, opts.interval || 1800);
+      timer = setInterval(function () { go(i + 1); }, opts.interval || 2200);
     });
     step.addEventListener("click", function () { stop(); go(i + 1); });
     restart.addEventListener("click", function () { stop(); go(0); });
     draw();
-    return { go: go, stop: stop, index: function () { return i; }, reduced: reduced };
+    return { go: go, stop: stop, refresh: buttons, index: function () { return i; }, reduced: reduced };
   }
 
   /* ---------- Print: open every detail panel ---------- */

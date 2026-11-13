@@ -23,13 +23,86 @@
   <main id="main">
     <p class="eyebrow"><span>Module 4</span><span>about 5 minutes</span><span class="part">Part A: Using it</span></p>
     <h1>AI-assisted code development</h1>
-    <p class="need"><strong>You need this if</strong> you manage people who write code or analysis, or you are asked what “AI coding tools” change.</p>
-    <p class="part-note">This module has not been built yet.</p>
+    <p class="need"><strong>You need this if</strong> you manage people who write code or analysis, or you are asked what &ldquo;AI coding tools&rdquo; change.</p>
+    <p class="relies"><strong>Relies on</strong> <a href="03-chat-vs-agent.html">module 3</a>: an agent is a model working in a loop, using tools behind permission gates.</p>
+
+    <div class="key-idea" id="key-idea">
+      <span class="label">The key idea</span>
+      <p>AI coding tools are agents whose tools are a code editor and a command line. The human&rsquo;s job moves from typing to specifying, reviewing and testing.</p>
+    </div>
+
+    <figure class="visual" id="walkthrough" aria-label="A step-by-step walkthrough of an AI coding agent fixing a small bug. A person describes the problem; the agent reads the files, proposes a plan, edits two lines, runs the tests, sees one fail, fixes it, sees all tests pass and writes a summary; a person then reviews the change.">
+      <p class="instruction js-only" hidden>Press Play or Step to follow one small task from request to review.</p>
+      <div id="walk-body"></div>
+      <noscript><p class="small muted">This interactive picture needs JavaScript. It follows one small bug fix: a person describes the problem; an agent reads the files, plans, edits two lines, runs the tests, fixes a failure and summarises; a person reviews the result.</p></noscript>
+      <figcaption><strong>What this shows:</strong> one small coding task, with each step marked by who is acting and which permission was used.</figcaption>
+      <p class="stamp"><span class="illus">Illustrative.</span> The task, code and test results are made up for this example.</p>
+    </figure>
+
+    <h2 id="what-changes">What changes</h2>
+    <p>An AI coding tool is an <a class="term" href="../glossary.html#agent">agent</a>, as in module 3, whose <a class="term" href="../glossary.html#tool">tools</a> are a code editor and a command line. It can read the files in a project, change them, run them and react to what happens. The person&rsquo;s work moves from typing code to saying clearly what is wanted, reviewing what comes back and testing that it works. In the walkthrough above, the person wrote one sentence and read two changed lines. The agent did everything in between, including finding and correcting its own mistake.</p>
+
+    <figure class="visual" id="levels" aria-label="Three levels of AI help with code, in order of increasing autonomy: autocomplete, chat and agent.">
+      <ol class="levels">
+        <li><strong>1. Autocomplete</strong> Suggests the next line as a person types.</li>
+        <li><strong>2. Chat</strong> Answers questions about code and offers snippets to copy.</li>
+        <li><strong>3. Agent</strong> Carries out a whole task: reads, edits, runs and checks.</li>
+      </ol>
+      <p class="levels-axis" aria-hidden="true"><span>The person does more</span><span>The tool does more &rarr;</span></p>
+      <figcaption><strong>What this shows:</strong> three levels of AI coding help. This module is about the third.</figcaption>
+    </figure>
+
+    <h2 id="strengths">Where it helps and where it needs supervision</h2>
+    <p>These tools are strongest on work that is well specified, testable and routine; on finding their way around unfamiliar code; and on first drafts. They need close supervision where requirements are ambiguous, where a change is security-sensitive, and anywhere there are no tests. Without tests nobody, human or agent, can easily tell whether a change is right.</p>
+    <p>A useful test is whether the task could be handed to a capable new colleague with a short written brief. If the brief would be hard to write, the agent will struggle for the same reason.</p>
+
+    <h2 id="what-makes-it-safe">What makes it safe</h2>
+    <p>Two long-standing practices do most of the work. Version control records every change, so anything the agent does can be inspected and undone. Automated tests give a quick, repeatable check that the code still behaves as intended. With both in place, an agent&rsquo;s mistakes are cheap to catch. Without them, they are easy to miss. It also helps to keep each task small, so that the change a person must review stays short enough to read properly.</p>
+    <p>Review remains a human responsibility. An agent reporting success is evidence, not sign-off.</p>
+
+    <div class="decisions" id="decisions">
+      <h2>What this means for your decisions</h2>
+      <ul>
+        <li>Productivity gains depend on good specifications and good tests; invest there.</li>
+        <li>Accountability does not move: the person who merges the change owns it.</li>
+        <li>Decide which repositories, data and commands the tools may use, as in <a href="03-chat-vs-agent.html">module 3</a>.</li>
+      </ul>
+    </div>
+
+    <details class="detail" id="detail">
+      <summary>The detail your technical team handles <span class="tag">optional</span></summary>
+      <div class="detail-body">
+        <h3 id="detail-context">Context limits on large codebases</h3>
+        <p>A large codebase does not fit in a <a class="term" href="../glossary.html#context-window">context window</a>. The agent searches for the relevant files and reads only those, so its work is only as good as its search. Clear structure and documentation help agents for the same reason they help new staff.</p>
+        <h3 id="detail-where">Where the code is sent</h3>
+        <p>Whatever the agent reads is sent to wherever the model runs. The four arrangements in <a href="02-local-vs-cloud.html">module 2</a> apply to code exactly as they do to any other data.</p>
+        <h3 id="detail-hygiene">Licensing and secrets</h3>
+        <p>Teams need a position on the licence status of generated code, and on keeping passwords and access keys out of anything the agent can read. Neither is new; both matter more when more code is written faster.</p>
+        <h3 id="detail-local">Coding agents on a local model</h3>
+        <p>A coding agent can be pointed at an open model on your own hardware, which keeps the code on site. Smaller local models are generally weaker at long, multi-step tasks, so teams test before relying on them. Part B explains the hardware side.</p>
+      </div>
+    </details>
+
+    <div class="check" id="check" data-explain="Passing tests are good evidence, but only as good as the tests. A person still reviews the change and takes responsibility for it.">
+      <h2>Check your understanding</h2>
+      <fieldset>
+        <legend>An AI agent has changed some code and reports that all tests pass. What is still needed?</legend>
+        <label><input type="radio" name="q4"> Nothing: passing tests prove the change is correct.</label>
+        <label><input type="radio" name="q4"> A larger model should repeat the work to confirm it.</label>
+        <label><input type="radio" name="q4" data-correct> A person reviews the change and takes responsibility for it.</label>
+      </fieldset>
+      <details class="answer">
+        <summary>Show the answer</summary>
+        <p>A person reviews the change and takes responsibility for it.</p>
+      </details>
+    </div>
+
     <nav class="pager" aria-label="Previous and next module">
       <a class="prev" href="03-chat-vs-agent.html"><span>Previous</span>3. A chat window vs. an agentic system</a>
       <a class="contents" href="../index.html">Contents</a>
       <a class="next" href="05-improving-results.html"><span>Next</span>5. Three ways to improve results</a>
     </nav>
+
     <footer class="page-footer">
       <p>Figures checked 13 November 2026. <a href="../sources.html">Sources and how prices are shown</a>.</p>
     </footer>
@@ -37,7 +110,7 @@
 </div>
 <script src="../data/modules.js"></script>
 <script src="../data/glossary.js"></script>
-
 <script src="../assets/js/site.js"></script>
+<script src="../assets/js/visuals/m04.js"></script>
 </body>
 </html>

@@ -23,13 +23,118 @@
   <main id="main">
     <p class="eyebrow"><span>Module 5</span><span>about 5 minutes</span><span class="part">Part A: Using it</span></p>
     <h1>Three ways to improve results</h1>
-    <p class="need"><strong>You need this if</strong> a tool “isn’t good enough” and you are asked to fund a fix.</p>
-    <p class="part-note">This module has not been built yet.</p>
+    <p class="need"><strong>You need this if</strong> a tool &ldquo;isn&rsquo;t good enough&rdquo; and you are asked to fund a fix.</p>
+
+    <div class="key-idea" id="key-idea">
+      <span class="label">The key idea</span>
+      <p>There are three levers, in rising order of cost and effort: ask better (prompting), give it the right documents (RAG), or change the model itself (fine-tuning). Try them in that order.</p>
+    </div>
+
+    <figure class="visual" id="ladder" aria-label="A ladder of three ways to improve results. Bottom rung: prompting, which changes your instructions and can be tried in minutes. Middle rung: RAG, which changes what the model can read and takes days to weeks. Top rung: fine-tuning, which changes the model's weights and takes weeks to months.">
+      <ol class="rungs">
+        <li>
+          <h3>1. Prompting: ask better</h3>
+          <dl>
+            <dt>What changes</dt><dd>Your instructions</dd>
+            <dt>Effort</dt><dd><span class="effort" aria-hidden="true">&#9632;&#9633;&#9633;</span> Low</dd>
+            <dt>Time to try</dt><dd>Minutes</dd>
+            <dt>Fixes</dt><dd>Answers that are vague, off-target or in the wrong form because the model had to guess what you wanted</dd>
+          </dl>
+        </li>
+        <li>
+          <h3>2. RAG: give it the right documents</h3>
+          <dl>
+            <dt>What changes</dt><dd>What the model can read</dd>
+            <dt>Effort</dt><dd><span class="effort" aria-hidden="true">&#9632;&#9632;&#9633;</span> Medium</dd>
+            <dt>Time to try</dt><dd>Days to weeks</dd>
+            <dt>Fixes</dt><dd>Answers that are wrong or out of date because the model has never seen your information</dd>
+          </dl>
+        </li>
+        <li>
+          <h3>3. Fine-tuning: change the model</h3>
+          <dl>
+            <dt>What changes</dt><dd>The model&rsquo;s weights</dd>
+            <dt>Effort</dt><dd><span class="effort" aria-hidden="true">&#9632;&#9632;&#9632;</span> High</dd>
+            <dt>Time to try</dt><dd>Weeks to months</dd>
+            <dt>Fixes</dt><dd>A format, tone or style the model will not hold to, even with clear instructions and examples</dd>
+          </dl>
+        </li>
+      </ol>
+      <figcaption><strong>What this shows:</strong> three ways to improve results, from the cheapest at the bottom to the most expensive at the top. Start at the bottom.</figcaption>
+      <p class="stamp"><span class="illus">Illustrative.</span> The times are indicative only; they depend on the task and the team.</p>
+    </figure>
+
+    <p>Each lever costs more than the one before, and takes longer to show whether it worked. Starting at the bottom means you spend the least to learn the most, and often the cheap fix is enough.</p>
+
+    <h2 id="prompting">Prompting: ask better</h2>
+    <p>A prompt is everything you give the model: instructions, examples of what good looks like, and the context it needs. Improving it costs nothing but time and can be tried in minutes. Many disappointing results come from a prompt that left the model guessing. The fix is to say who the answer is for, what form it should take and what to leave out, and to show one or two examples.</p>
+
+    <h2 id="rag">RAG: give it the right documents</h2>
+    <p>A model knows only what was in its <a class="term" href="../glossary.html#training">training</a> text and what is in front of it. Retrieval-augmented generation (<a class="term" href="../glossary.html#rag">RAG</a>) finds the passages in your documents most relevant to each question and places them in the <a class="term" href="../glossary.html#context-window">context window</a> beside the question.</p>
+    <p>It is like an open-book exam: the model reads the relevant pages at the time of asking. Update a document, and the next answer reflects it. The comparison stops there. A student can leaf through the whole book; the model sees only the pages the search step hands it, so if the search misses, the answer will too.</p>
+
+    <figure class="visual" id="rag-visual" aria-label="How RAG works, in four steps. A question is asked; a search of the document store finds the three most relevant passages; those passages are placed in the context window beside the question; the model answers from them.">
+      <p class="instruction js-only" hidden>Press Play or Step to follow a question through RAG.</p>
+      <div id="rag-body"></div>
+      <figcaption><strong>What this shows:</strong> RAG does not change the model. It changes what is in the context window when the question is asked.</figcaption>
+      <p class="stamp"><span class="illus">Illustrative.</span></p>
+    </figure>
+
+    <h2 id="fine-tuning">Fine-tuning: change the model</h2>
+    <p><a class="term" href="../glossary.html#fine-tuning">Fine-tuning</a> is further training on your own examples, which changes the model&rsquo;s weights. It can shift behaviour and style: a house format, a specialist tone. It is a poor way to add facts that change often, because every change means training again. It also needs a large set of good examples, which someone has to assemble and check.</p>
+
+    <figure class="visual" id="which" aria-label="A short series of yes or no questions that ends by recommending prompting, RAG or fine-tuning.">
+      <h3 class="vis-title">Which one do I need?</h3>
+      <div id="which-body"></div>
+      <noscript><p class="small muted">This interactive picture needs JavaScript. In words: if you have not yet given clear instructions and examples, start with prompting. If the model is missing facts that are in your documents, use RAG. If it knows enough but still answers in the wrong format, tone or style, consider fine-tuning.</p></noscript>
+      <figcaption><strong>What this shows:</strong> a few questions that point to the cheapest lever likely to work.</figcaption>
+    </figure>
+
+    <div class="decisions" id="decisions">
+      <h2>What this means for your decisions</h2>
+      <ul>
+        <li>Most &ldquo;the AI doesn&rsquo;t know our stuff&rdquo; problems are RAG problems, not fine-tuning problems.</li>
+        <li>RAG is only as good as the documents behind it; budget for keeping them clean and current.</li>
+        <li>Fine-tuning creates a model you must then own, host and re-do when the base model changes.</li>
+      </ul>
+    </div>
+
+    <details class="detail" id="detail">
+      <summary>The detail your technical team handles <span class="tag">optional</span></summary>
+      <div class="detail-body">
+        <h3 id="detail-embeddings">Embeddings and vector search</h3>
+        <p>To find relevant passages, each passage is converted into a list of numbers, called an embedding, that represents its meaning. The question is converted in the same way, and the passages whose numbers are closest to it are retrieved.</p>
+        <h3 id="detail-chunking">Chunking</h3>
+        <p>Documents are cut into passages before they are stored. How they are cut, by page, by section or by paragraph, has a large effect on whether the right material is found.</p>
+        <h3 id="detail-evaluation">Evaluation sets</h3>
+        <p>An evaluation set is a fixed list of realistic questions with known good answers. Running it before and after a change is how a team knows the change made things better, and not merely different.</p>
+        <h3 id="detail-lora">LoRA</h3>
+        <p>LoRA is a widely used, cheaper form of fine-tuning. It trains a small add-on to the model and leaves the original weights untouched, which makes it quicker to produce and easier to swap.</p>
+        <h3 id="detail-combining">Combining all three</h3>
+        <p>The levers are not alternatives. A mature system often uses a carefully written prompt, RAG for the facts, and occasionally a fine-tuned model for style.</p>
+      </div>
+    </details>
+
+    <div class="check" id="check" data-explain="This year&rsquo;s policies are facts in documents the model has not seen. After checking the prompt, give it the documents to read. Fine-tuning would have to be repeated every time a policy changed.">
+      <h2>Check your understanding</h2>
+      <fieldset>
+        <legend>Staff complain the assistant doesn&rsquo;t know this year&rsquo;s policies. What do you try first?</legend>
+        <label><input type="radio" name="q5" data-correct> Give it the policy documents to read (RAG), after checking the prompt.</label>
+        <label><input type="radio" name="q5"> Fine-tune the model on this year&rsquo;s policies.</label>
+        <label><input type="radio" name="q5"> Buy access to a larger model.</label>
+      </fieldset>
+      <details class="answer">
+        <summary>Show the answer</summary>
+        <p>Give it the policy documents to read (RAG), after checking the prompt.</p>
+      </details>
+    </div>
+
     <nav class="pager" aria-label="Previous and next module">
       <a class="prev" href="04-ai-assisted-coding.html"><span>Previous</span>4. AI-assisted code development</a>
       <a class="contents" href="../index.html">Contents</a>
       <a class="next" href="06-what-a-model-is.html"><span>Next</span>6. What a model physically is</a>
     </nav>
+
     <footer class="page-footer">
       <p>Figures checked 13 November 2026. <a href="../sources.html">Sources and how prices are shown</a>.</p>
     </footer>
@@ -37,7 +142,7 @@
 </div>
 <script src="../data/modules.js"></script>
 <script src="../data/glossary.js"></script>
-
 <script src="../assets/js/site.js"></script>
+<script src="../assets/js/visuals/m05.js"></script>
 </body>
 </html>

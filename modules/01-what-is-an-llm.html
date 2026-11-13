@@ -23,13 +23,84 @@
   <main id="main">
     <p class="eyebrow"><span>Module 1</span><span>about 5 minutes</span><span class="part">Part A: Using it</span></p>
     <h1>What an LLM is</h1>
-    <p class="need"><strong>You need this if</strong> you want a one-sentence answer to “what is this thing actually doing?”</p>
-    <p class="part-note">This module has not been built yet.</p>
+    <p class="need"><strong>You need this if</strong> you want a one-sentence answer to &ldquo;what is this thing actually doing?&rdquo;</p>
+
+    <div class="key-idea" id="key-idea">
+      <span class="label">The key idea</span>
+      <p>An LLM predicts the next small piece of text, over and over. Everything it does is built from that.</p>
+    </div>
+
+    <figure class="visual" id="predictor" aria-label="An interactive next-token predictor. A sentence beginning 'The patient was discharged from the' is followed by a bar chart of candidate next tokens and their probabilities. Picking a token adds it to the sentence and the chart updates for the next position.">
+      <p class="instruction js-only" hidden>Press &ldquo;Pick next token&rdquo; a few times. Then move the slider and watch the bars change.</p>
+      <div id="predictor-body"></div>
+      <noscript><p class="small muted">This interactive picture needs JavaScript. It shows a sentence growing one token at a time, each chosen from a short list of likely candidates.</p></noscript>
+      <figcaption><strong>What this shows:</strong> a model writing a sentence one token at a time, choosing each from a list of candidates with different probabilities.</figcaption>
+      <p class="stamp"><span class="illus">Illustrative.</span> The candidates and probabilities are a small hand-written table, not the output of a real model.</p>
+    </figure>
+
+    <h2 id="tokens">Tokens and the context window</h2>
+    <p>A large language model (<a class="term" href="../glossary.html#llm">LLM</a>) does not work in whole words. It works in <a class="term" href="../glossary.html#token">tokens</a>: small pieces of text, each roughly three-quarters of a word as a rule of thumb. Given some text, the model works out how likely each possible next token is, picks one, adds it to the text and repeats. An answer of several paragraphs is that one step, repeated a few hundred times.</p>
+    <p>The model can only take into account a limited amount of text at once. This is its <a class="term" href="../glossary.html#context-window">context window</a>: its field of view. It holds your instructions, the conversation so far and any documents you supplied. As far as the model is concerned, text outside the window does not exist.</p>
+
+    <figure class="visual" id="window" aria-label="A passage of text split into token tiles. The most recent tokens are inside the context window; older ones are struck through because the model can no longer see them.">
+      <p class="instruction js-only" hidden>Move the slider to change the size of the context window.</p>
+      <div id="window-body"></div>
+      <figcaption><strong>What this shows:</strong> text split into tokens, which are often parts of words, and a context window that covers only the most recent ones.</figcaption>
+      <p class="stamp"><span class="illus">Illustrative.</span> Real context windows are far larger, and real models split words differently.</p>
+    </figure>
+
+    <h2 id="training-and-inference">Training and inference</h2>
+    <p>The model&rsquo;s ability comes from <a class="term" href="../glossary.html#training">training</a>: a one-off process, run by the model&rsquo;s maker at very great expense, in which it is shown enormous amounts of text. What it learns is stored as billions of numbers called <a class="term" href="../glossary.html#parameter">weights</a>. Using the finished model is called <a class="term" href="../glossary.html#inference">inference</a>, and it happens every time you ask something.</p>
+    <p>Chatting with a model does not change its weights. It appears to remember what you said earlier only because the whole conversation is inside its context window each time.</p>
+
+    <h2 id="plausible">Plausible is not the same as true</h2>
+    <p>A model produces text that is plausible given what came before. Plausible text is usually true, but not always. The model has no separate step in which it checks facts, and it writes a wrong answer in the same fluent, confident style as a right one. This is why the same tool can produce an excellent summary one minute and state something false the next. Both come from the same process.</p>
+
+    <div class="decisions" id="decisions">
+      <h2>What this means for your decisions</h2>
+      <ul>
+        <li>It does not look things up unless it has been given a tool to do so (<a href="03-chat-vs-agent.html">module 3</a>) or documents to read (<a href="05-improving-results.html">module 5</a>).</li>
+        <li>Confident wording is not evidence of accuracy. Decide where checking is needed.</li>
+        <li>Cost and speed are both counted in tokens (<a href="02-local-vs-cloud.html">modules 2</a> and <a href="07-how-a-response-is-made.html">7</a>).</li>
+      </ul>
+    </div>
+
+    <details class="detail" id="detail">
+      <summary>The detail your technical team handles <span class="tag">optional</span></summary>
+      <div class="detail-body">
+        <h3 id="detail-transformer">The architecture</h3>
+        <p>Current LLMs are built on a design called the transformer. Its central mechanism, attention, lets the model weigh every token in the context window against every other when predicting the next one.</p>
+        <h3 id="detail-sampling">Sampling and temperature</h3>
+        <p>Choosing the next token from the list of candidates is called sampling. A setting called temperature controls how adventurous the choice is: low values nearly always take the most likely token, higher values give less likely tokens more of a chance. The slider in the picture above is a temperature control.</p>
+        <h3 id="detail-different-answers">Why the same question can give different answers</h3>
+        <p>Because each token is sampled, two runs can diverge at any point, and one different token changes everything that follows. Where consistency matters, engineers lower the temperature, though even then identical output is not always guaranteed.</p>
+        <h3 id="detail-cutoff">Knowledge cut-off</h3>
+        <p>Training stops on a particular date. The model knows nothing after that date unless the information is placed in its context window.</p>
+        <h3 id="detail-hallucination">Hallucination</h3>
+        <p>&ldquo;Hallucination&rdquo; is the common name for fluent output that is false. It is a consequence of prediction, not a malfunction: the model is doing exactly what it always does, and the most plausible continuation happened not to be true. It is reduced by supplying sources and by checking, not eliminated.</p>
+      </div>
+    </details>
+
+    <div class="check" id="check" data-explain="Chatting does not change the model. It only has the conversation in its context window, and that is gone when the conversation ends.">
+      <h2>Check your understanding</h2>
+      <fieldset>
+        <legend>When you chat with an LLM, when does it learn from your conversation?</legend>
+        <label><input type="radio" name="q1"> Immediately: each message updates the model.</label>
+        <label><input type="radio" name="q1"> Overnight: the day&rsquo;s conversations are added to the model.</label>
+        <label><input type="radio" name="q1" data-correct> It does not change the model; it only has the conversation in its context window.</label>
+      </fieldset>
+      <details class="answer">
+        <summary>Show the answer</summary>
+        <p>It does not change the model; it only has the conversation in its context window.</p>
+      </details>
+    </div>
+
     <nav class="pager" aria-label="Previous and next module">
-      
+      <span></span>
       <a class="contents" href="../index.html">Contents</a>
       <a class="next" href="02-local-vs-cloud.html"><span>Next</span>2. Local AI vs. cloud AI</a>
     </nav>
+
     <footer class="page-footer">
       <p>Figures checked 13 November 2026. <a href="../sources.html">Sources and how prices are shown</a>.</p>
     </footer>
@@ -37,7 +108,7 @@
 </div>
 <script src="../data/modules.js"></script>
 <script src="../data/glossary.js"></script>
-
 <script src="../assets/js/site.js"></script>
+<script src="../assets/js/visuals/m01.js"></script>
 </body>
 </html>
