@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2. Local AI vs. cloud AI — Just Enough AI</title>
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body data-root="../" data-module="2">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="../index.html">Just Enough AI</a>
+  <button type="button" id="menu-btn" class="btn secondary menu-btn" hidden>Menu</button>
+</header>
+<div class="layout">
+  <nav id="sidebar" class="sidebar" aria-label="Course contents">
+    <ul>
+      <li><a href="../index.html">Contents</a></li>
+      <li><a href="../glossary.html">Glossary</a></li>
+      <li><a href="../sources.html">Sources</a></li>
+    </ul>
+  </nav>
+  <main id="main">
+    <p class="eyebrow"><span>Module 2</span><span>about 5 minutes</span><span class="part">Part A: Using it</span></p>
+    <h1>Local AI vs. cloud AI</h1>
+    <p class="need"><strong>You need this if</strong> you are asked to approve, buy or govern an AI tool.</p>
+
+    <div class="key-idea" id="key-idea">
+      <span class="label">The key idea</span>
+      <p>Every way of using AI answers four questions differently: who owns the model, who owns the GPU, how do you pay, and where does your data go.</p>
+    </div>
+
+    <figure class="visual" id="ownership-grid" aria-label="A grid of four ways to use AI against four questions. A chat subscription and API access: the vendor owns the model and the GPU, and your data goes to the vendor. An open model on a rented cloud GPU: you run the model, the cloud provider owns the GPU, and your data goes to a machine you control in their data centre. An open model on your own hardware: you own everything and your data stays with you.">
+      <p class="instruction js-only" hidden>Select an arrangement to see where your data goes and what it costs.</p>
+      <ul class="legend" aria-hidden="true">
+        <li><span class="swatch zone-yours"></span> Yours</li>
+        <li><span class="swatch zone-theirs"></span> Theirs</li>
+      </ul>
+      <table class="grid">
+        <thead>
+          <tr>
+            <th scope="col">Arrangement</th>
+            <th scope="col">Who owns the model?</th>
+            <th scope="col">Who owns the GPU?</th>
+            <th scope="col">How do you pay?</th>
+            <th scope="col">Where does your data go?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-arr="chat">
+            <th scope="row">Chat subscription</th>
+            <td class="zone-theirs" data-label="Who owns the model?"><span class="zone-tag">Theirs</span>Vendor</td>
+            <td class="zone-theirs" data-label="Who owns the GPU?"><span class="zone-tag">Theirs</span>Vendor</td>
+            <td class="zone-theirs" data-label="How do you pay?"><span class="zone-tag">To them</span>Per seat, per month</td>
+            <td class="zone-theirs" data-label="Where does your data go?"><span class="zone-tag">Theirs</span>To the vendor</td>
+          </tr>
+          <tr data-arr="api">
+            <th scope="row">API access</th>
+            <td class="zone-theirs" data-label="Who owns the model?"><span class="zone-tag">Theirs</span>Vendor</td>
+            <td class="zone-theirs" data-label="Who owns the GPU?"><span class="zone-tag">Theirs</span>Vendor</td>
+            <td class="zone-theirs" data-label="How do you pay?"><span class="zone-tag">To them</span>Per token</td>
+            <td class="zone-theirs" data-label="Where does your data go?"><span class="zone-tag">Theirs</span>To the vendor</td>
+          </tr>
+          <tr data-arr="rented">
+            <th scope="row">Open model on a rented cloud GPU</th>
+            <td class="zone-yours" data-label="Who owns the model?"><span class="zone-tag">Yours</span>Open weights; you run it</td>
+            <td class="zone-theirs" data-label="Who owns the GPU?"><span class="zone-tag">Theirs</span>Cloud provider</td>
+            <td class="zone-theirs" data-label="How do you pay?"><span class="zone-tag">To them</span>Per GPU-hour, busy or not</td>
+            <td class="zone-mixed" data-label="Where does your data go?"><span class="zone-tag">Yours, on theirs</span>To a machine you control in someone else&rsquo;s data centre</td>
+          </tr>
+          <tr data-arr="own">
+            <th scope="row">Open model on your own hardware</th>
+            <td class="zone-yours" data-label="Who owns the model?"><span class="zone-tag">Yours</span>Open weights; you run it</td>
+            <td class="zone-yours" data-label="Who owns the GPU?"><span class="zone-tag">Yours</span>You</td>
+            <td class="zone-yours" data-label="How do you pay?"><span class="zone-tag">Yours to keep</span>Purchase, then power and hosting</td>
+            <td class="zone-yours" data-label="Where does your data go?"><span class="zone-tag">Yours</span>Stays with you</td>
+          </tr>
+        </tbody>
+      </table>
+      <div id="arr-panel" class="arr-panel" aria-live="polite"></div>
+      <noscript><p class="small muted">The cost examples and the hardware ladder under this grid need JavaScript. The grid and the text below carry the main points without it.</p></noscript>
+      <figcaption><strong>What this shows:</strong> four ways of using AI, and for each one what is yours and what is someone else&rsquo;s. All prices include VAT.</figcaption>
+    </figure>
+
+    <h2 id="four-arrangements">Four arrangements</h2>
+    <p>With a <strong>chat subscription</strong> you pay per person per month, and staff type into the vendor&rsquo;s product. With <strong><a class="term" href="../glossary.html#api">API</a> access</strong> your own software sends text to the vendor&rsquo;s model, and you pay per <a class="term" href="../glossary.html#token">token</a>: the small pieces of text a model reads and writes. In both, the vendor owns the model and the <a class="term" href="../glossary.html#gpu">GPU</a>, the specialised processor a model runs on, and your data goes to the vendor.</p>
+    <p>The other two use a model with <strong><a class="term" href="../glossary.html#open-weights">open weights</a></strong>: a model file you can download and run yourself. You can run it on a GPU rented by the hour from a cloud provider, or on hardware you buy. Renting sends your data to a machine you control in someone else&rsquo;s data centre. Owning keeps it with you.</p>
+
+    <h2 id="when-hardware-matters">When hardware becomes your concern</h2>
+    <p>In the top two rows, hardware is the vendor&rsquo;s problem. Only the bottom two rows make it yours: you choose the machine, and you pay for it whether or not anyone is using it. Part B of this course explains what your technical team weighs up. Select the last row to see the hardware ladder, which runs from a desk-sized computer to a rack server costing roughly 100 times as much.</p>
+
+    <h2 id="prices-move">Prices move, and include VAT</h2>
+    <p>Treat every figure as a snapshot. The desk-sized computer launched in the UK at about &pound;3,700 in October 2025 and sold for &pound;5,250 to &pound;6,399 in November 2026 <span class="srcref">(<a href="../sources.html#S30">S30</a>, <a href="../sources.html#S9">S9</a>, <a href="../sources.html#S10">S10</a>)</span>. One rental index for a single H100, a widely used data-centre GPU, rose from $2.00 an hour in December 2025 to $3.01 in November 2026 <span class="srcref">(<a href="../sources.html#S31">S31</a>)</span>.</p>
+    <p>All UK prices in this course include VAT at 20%, because most public bodies and healthcare providers cannot reclaim it, so that is the real cost to them. Organisations able to reclaim VAT will pay one-sixth less.</p>
+
+    <div class="decisions" id="decisions">
+      <h2>What this means for your decisions</h2>
+      <ul>
+        <li>Ask the four questions of any AI product put in front of you.</li>
+        <li>Per-seat pricing is predictable; per-token pricing scales with use; owned hardware is a fixed cost that is cheap only if it is busy.</li>
+        <li>The purchase price of large hardware is not the whole cost: add power, hosting and people. For a hosted eight-GPU server, published estimates are roughly &pound;31,000 to &pound;129,000 a year, converted from USD <span class="srcref">(<a href="../sources.html#S21">S21</a>)</span>.</li>
+      </ul>
+    </div>
+
+    <details class="detail" id="detail">
+      <summary>The detail your technical team handles <span class="tag">optional</span></summary>
+      <div class="detail-body">
+        <h3 id="detail-terms">Contract terms that change the data answer</h3>
+        <p>&ldquo;To the vendor&rdquo; covers a wide range. Enterprise contracts usually state whether your data may be used for <a class="term" href="../glossary.html#training">training</a> future models, how long prompts and outputs are retained, and which region they are processed and stored in. Consumer and free versions of the same product often have weaker terms than the business version. Your information governance and procurement teams read these terms; the answer belongs in any approval.</p>
+        <h3 id="detail-hybrid">Hybrid arrangements</h3>
+        <p>The four rows are not the only options. A vendor&rsquo;s model can be hosted inside your own cloud tenancy, so that the vendor still owns the model but the data stays within an environment you already govern. Some organisations also mix rows: a subscription for general staff use, API access for software they build, and a small machine on site for the most sensitive work.</p>
+        <h3 id="detail-open">How good are open models?</h3>
+        <p>The largest open models, which need hardware near the top of the ladder, can generally match hosted models for some tasks, but not all. Smaller open models that fit on a desk-sized machine are generally less capable, and are often good enough for well-defined work such as summarising or drafting. This changes with every model release, so your technical team should test candidates on your own tasks.</p>
+      </div>
+    </details>
+
+    <div class="check" id="check" data-explain="Renting a GPU by the hour means the cloud provider owns it and you pay for the time it is switched on, whether or not it is doing any work.">
+      <h2>Check your understanding</h2>
+      <fieldset>
+        <legend>Your team runs an open-weights model on a GPU rented by the hour from a cloud provider. Who owns the GPU, and what are you paying for?</legend>
+        <label><input type="radio" name="q2"> You own it; you pay for each token the model writes.</label>
+        <label><input type="radio" name="q2" data-correct> The cloud provider owns it; you pay for time, whether or not it is busy.</label>
+        <label><input type="radio" name="q2"> The model&rsquo;s maker owns it; you pay per seat, per month.</label>
+      </fieldset>
+      <details class="answer">
+        <summary>Show the answer</summary>
+        <p>The cloud provider owns it; you pay for time, whether or not it is busy.</p>
+      </details>
+    </div>
+
+    <nav class="pager" aria-label="Previous and next module">
+      <a class="prev" href="01-what-is-an-llm.html"><span>Previous</span>1. What an LLM is</a>
+      <a class="contents" href="../index.html">Contents</a>
+      <a class="next" href="03-chat-vs-agent.html"><span>Next</span>3. A chat window vs. an agentic system</a>
+    </nav>
+
+    <footer class="page-footer">
+      <p>Figures checked 13 November 2026. <a href="../sources.html">Sources and how prices are shown</a>.</p>
+    </footer>
+  </main>
+</div>
+<script src="../data/modules.js"></script>
+<script src="../data/glossary.js"></script>
+<script src="../data/sources.js"></script>
+<script src="../data/prices.js"></script>
+<script src="../data/hardware.js"></script>
+<script src="../assets/js/site.js"></script>
+<script src="../assets/js/visuals/m02.js"></script>
+</body>
+</html>
