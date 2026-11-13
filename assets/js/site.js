@@ -223,7 +223,10 @@
 
   /* ---------- Stepper: Play, Pause, Step, Restart; "Step n of m" ---------- */
   function stepper(container, opts) {
-    var total = opts.steps, i = 0, timer = null;
+    /* opts.steps: number, or a function returning one (when the length can change).
+       opts.interval: milliseconds, or a function of the step index.
+       opts.canAdvance(i): return false to hold the stepper at step i. */
+    var i = 0, timer = null;
     var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var play = el("button", { type: "button", "class": "btn", text: "Play" });
     var step = el("button", { type: "button", "class": "btn secondary", text: reduced ? "Next step" : "Step" });
@@ -231,24 +234,27 @@
     var count = el("span", { "class": "count", role: "status" });
     var bar = el("div", { "class": "stepper" }, [reduced ? null : play, step, restart, count]);
     container.appendChild(bar);
+    function total() { return typeof opts.steps === "function" ? opts.steps() : opts.steps; }
+    function delay() { return typeof opts.interval === "function" ? opts.interval(i) : (opts.interval || 2200); }
     function blocked() { return opts.canAdvance ? !opts.canAdvance(i) : false; }
+    function stop() { clearTimeout(timer); timer = null; play.textContent = "Play"; }
     function buttons() {
-      var end = i >= total - 1 || blocked();
+      var end = i >= total() - 1 || blocked();
       if (end && timer) stop();
       step.disabled = end;
       play.disabled = end;
     }
     function draw() {
-      count.textContent = "Step " + (i + 1) + " of " + total;
+      count.textContent = "Step " + (i + 1) + " of " + total();
       opts.onStep(i);
       buttons();
     }
-    function stop() { clearInterval(timer); timer = null; play.textContent = "Play"; }
-    function go(n) { i = Math.max(0, Math.min(total - 1, n)); draw(); }
+    function go(n) { i = Math.max(0, Math.min(total() - 1, n)); draw(); }
+    function tick() { timer = setTimeout(function () { go(i + 1); if (timer) tick(); }, delay()); }
     play.addEventListener("click", function () {
       if (timer) { stop(); return; }
       play.textContent = "Pause";
-      timer = setInterval(function () { go(i + 1); }, opts.interval || 2200);
+      tick();
     });
     step.addEventListener("click", function () { stop(); go(i + 1); });
     restart.addEventListener("click", function () { stop(); go(0); });

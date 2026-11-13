@@ -21,15 +21,102 @@
     </ul>
   </nav>
   <main id="main">
-    <p class="eyebrow"><span>Module 8</span><span>about 5 minutes</span><span class="part">Part B: Running it</span></p>
+    <p class="eyebrow"><span>Module 8</span><span>about 5 minutes</span><span class="part">Part B: Running it (what a technical team weighs up when AI runs on hardware you control)</span></p>
     <h1>Hardware and performance</h1>
-    <p class="need"><strong>You need this if</strong> you are shown a hardware quote, or told a system will be “too slow”.</p>
-    <p class="part-note">This module has not been built yet.</p>
+    <p class="need"><strong>You need this if</strong> you are shown a hardware quote, or told a system will be &ldquo;too slow&rdquo;.</p>
+    <p class="relies"><strong>Relies on</strong> <a href="06-what-a-model-is.html">module 6</a> (a model must fit in memory) and <a href="07-how-a-response-is-made.html">module 7</a> (reading the prompt, then writing token by token).</p>
+
+    <div class="key-idea" id="key-idea">
+      <span class="label">The key idea</span>
+      <p>Three things decide performance. Memory capacity decides whether a model fits. Memory bandwidth decides how fast it writes. The processor decides how fast it reads, and how many people it can serve at once.</p>
+    </div>
+
+    <figure class="visual" id="tank" aria-label="A memory tank holding the model's weights, joined by a pipe to a processor drawn as a row of workers. The width of the pipe is the memory bandwidth. Each token written is one full sweep of the weights through the pipe. Controls change the model size, the machine and whether the processor is a GPU or a CPU, and a readout shows whether the model fits and a rough estimate of tokens per second.">
+      <p class="instruction js-only" hidden>Change the model size, the machine, or the processor, and watch the tank, the pipe and the estimate.</p>
+      <div id="tank-body"></div>
+      <noscript><p class="small muted">This interactive picture needs JavaScript. It shows a tank of memory holding the model, a pipe whose width is the memory bandwidth, and a processor. A bigger tank lets a bigger model fit; a wider pipe lets it write faster.</p></noscript>
+      <figcaption><strong>What this shows:</strong> the tank is memory capacity, the pipe is memory bandwidth, and the workers are the processor. Each token written needs the whole model to flow through the pipe once.</figcaption>
+      <p class="stamp">Speeds are a <strong>rough estimate</strong> from a simple teaching formula; real speed depends on software and settings. Memory and bandwidth figures: sources <a href="../sources.html#S9">S9</a>, <a href="../sources.html#S11">S11</a>, <a href="../sources.html#S13">S13</a>, <a href="../sources.html#S14">S14</a>, <a href="../sources.html#S16">S16</a>. Checked 13 November 2026.</p>
+    </figure>
+
+    <h2 id="tank-and-pipe">How big is the tank, how wide is the pipe</h2>
+    <p>Memory capacity is the size of the tank: it decides whether the model fits at all. <a class="term" href="../glossary.html#memory-bandwidth">Memory bandwidth</a> is the width of the pipe between memory and the processor. Every <a class="term" href="../glossary.html#token">token</a> the model writes needs one full sweep of its weights through that pipe, so a wider pipe means more tokens per second. A machine with a big tank and a narrow pipe can run a large model, but slowly.</p>
+    <p>The picture stops being true in one respect: nothing drains. The weights stay in memory and are read, over and over.</p>
+
+    <h2 id="gpu-vs-cpu">Why a GPU beats a CPU</h2>
+    <p>A <a class="term" href="../glossary.html#gpu">GPU</a> has a great many small workers calculating at the same time, fed by memory with a very wide pipe. A <a class="term" href="../glossary.html#cpu">CPU</a> has a few powerful workers and ordinary memory, whose bandwidth is typically tens of GB/s against hundreds or thousands for the machines here. The number of workers also sets how fast a prompt is read. This is why AI hardware is described by its GPUs and their memory, and hardly at all by the CPU beside them.</p>
+
+    <h2 id="sharing">Sharing the sweep</h2>
+    <p>One sweep of the weights can produce a token for many users at once. This is <a class="term" href="../glossary.html#batching">batching</a>. Each user&rsquo;s speed drops a little, and total output rises several-fold, so serving many people is far more efficient than the single-user speed suggests.</p>
+
+    <figure class="visual" id="batching" aria-label="A bar chart from one published test on a desk-sized machine. One user: about 8 tokens per second in total. Ten users at once: about 58 tokens per second in total.">
+      <div id="batch-body"></div>
+      <figcaption><strong>What this shows:</strong> in one published test on a desk-sized machine, ten users together got about seven times the output of one user alone.</figcaption>
+      <p class="stamp">Source: <a href="../sources.html#S24">S24</a>. Checked 13 November 2026. One model on one setup.</p>
+    </figure>
+
+    <p>The larger rungs also bring costs beyond the purchase: power, cooling and somewhere to put the machine.</p>
+
+    <figure class="visual" id="ladder-power" aria-label="The five rungs of the hardware ladder, each with its memory, memory bandwidth, power while generating, indicative yearly electricity cost and any measured performance.">
+      <h3 class="vis-title">The hardware ladder, with power and performance</h3>
+      <div id="ladder-body"></div>
+      <noscript><p class="small muted">This table needs JavaScript. The five rungs run from a desk-sized computer drawing about 100 W to a rack server drawing about 14.5 to 15 kW.</p></noscript>
+      <figcaption><strong>What this shows:</strong> what each step up the ladder brings, and what it draws. The power bars are on a logarithmic scale: each quarter of the bar is ten times the power.</figcaption>
+      <p class="stamp">Sources: <a href="../sources.html#S9">S9</a>, <a href="../sources.html#S11">S11</a>, <a href="../sources.html#S13">S13</a>, <a href="../sources.html#S16">S16</a> to <a href="../sources.html#S19">S19</a>, <a href="../sources.html#S22">S22</a> to <a href="../sources.html#S29">S29</a>. Checked 13 November 2026. Electricity is an illustration at 30p per kWh including VAT, running continuously, and excludes cooling. The light bulb and oven comparisons are illustrative.</p>
+    </figure>
+
+    <div class="decisions" id="decisions">
+      <h2>What this means for your decisions</h2>
+      <ul>
+        <li>Ask of any hardware proposal: what model will it run, for how many people at once, at what speed? A price alone tells you little.</li>
+        <li>Small machines are for individuals and small teams and for sensitive work that must stay on site. Large machines only make sense when they are kept busy.</li>
+        <li>Above desk scale, you are also buying a power supply, cooling and somewhere to put it.</li>
+      </ul>
+    </div>
+
+    <details class="detail" id="detail">
+      <summary>The detail your technical team handles <span class="tag">optional</span></summary>
+      <div class="detail-body">
+        <h3 id="detail-bandwidth">Bandwidth for each rung</h3>
+        <ul>
+          <li>Desk-sized AI computer: 273 GB/s.</li>
+          <li>Two desk-sized units, linked: 273 GB/s each. Linking adds capacity; it does not widen either pipe.</li>
+          <li>Deskside workstation: 7.1 TB/s for its 252 GB of GPU memory; 396 GB/s for the rest.</li>
+          <li>Rack server, 8 &times; H200: 4.8 TB/s per GPU.</li>
+          <li>Rack server, 8 &times; B300: up to 8 TB/s per GPU.</li>
+          <li>A CPU with ordinary memory: tens of GB/s, as a typical order of magnitude. No sourced figure is used.</li>
+        </ul>
+        <h3 id="detail-links">Links between GPUs</h3>
+        <p>When a model is split across several GPUs, they exchange data for every token. Slow links between them become the new narrow pipe, which is why multi-GPU servers are built with very fast connections.</p>
+        <h3 id="detail-two-questions">Two speeds, two questions</h3>
+        <p><a class="term" href="../glossary.html#time-to-first-token">Time to first token</a> is mostly a question of computing power. <a class="term" href="../glossary.html#tokens-per-second">Tokens per second</a> for one user is mostly a question of bandwidth. A machine can be good at one and poor at the other.</p>
+        <h3 id="detail-benchmarks">Why benchmarks are hard to compare</h3>
+        <p>A published speed depends on the model, the precision it was stored at, the software used to run it and the number of simultaneous users. Two figures for the same machine can differ several-fold for these reasons alone. The estimate in the picture above is capped at &ldquo;100+&rdquo; because, at high speeds, other limits take over from bandwidth.</p>
+        <h3 id="detail-top-rung">The top rung</h3>
+        <p>No published inference benchmark for an 8 &times; B300 server was found. The nearest evidence is a comparison of 8 &times; H200 against 8 &times; B200; B300 is the newer generation, with more memory.</p>
+      </div>
+    </details>
+
+    <div class="check" id="check" data-explain="Capacity decides whether the model fits; bandwidth decides how fast it writes. Plenty of memory with a narrow pipe means the model runs, but each token takes a long time.">
+      <h2>Check your understanding</h2>
+      <fieldset>
+        <legend>A machine has plenty of memory but low memory bandwidth. What happens with a large model?</legend>
+        <label><input type="radio" name="q8"> It will not run at all.</label>
+        <label><input type="radio" name="q8" data-correct> It runs, but writes slowly.</label>
+        <label><input type="radio" name="q8"> It runs at full speed, but only for one user.</label>
+      </fieldset>
+      <details class="answer">
+        <summary>Show the answer</summary>
+        <p>It runs, but writes slowly.</p>
+      </details>
+    </div>
+
     <nav class="pager" aria-label="Previous and next module">
       <a class="prev" href="07-how-a-response-is-made.html"><span>Previous</span>7. How a response gets made</a>
       <a class="contents" href="../index.html">Contents</a>
       <a class="next" href="09-dense-vs-moe.html"><span>Next</span>9. Dense vs. MoE models</a>
     </nav>
+
     <footer class="page-footer">
       <p>Figures checked 13 November 2026. <a href="../sources.html">Sources and how prices are shown</a>.</p>
     </footer>
@@ -37,7 +124,9 @@
 </div>
 <script src="../data/modules.js"></script>
 <script src="../data/glossary.js"></script>
-
+<script src="../data/hardware.js"></script>
+<script src="../assets/js/estimate.js"></script>
 <script src="../assets/js/site.js"></script>
+<script src="../assets/js/visuals/m08.js"></script>
 </body>
 </html>

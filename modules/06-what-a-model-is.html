@@ -21,15 +21,77 @@
     </ul>
   </nav>
   <main id="main">
-    <p class="eyebrow"><span>Module 6</span><span>about 5 minutes</span><span class="part">Part B: Running it</span></p>
+    <p class="eyebrow"><span>Module 6</span><span>about 5 minutes</span><span class="part">Part B: Running it (what a technical team weighs up when AI runs on hardware you control)</span></p>
     <h1>What a model physically is</h1>
-    <p class="need"><strong>You need this if</strong> someone tells you a model “won’t fit” or “needs a bigger GPU”.</p>
-    <p class="part-note">This module has not been built yet.</p>
+    <p class="need"><strong>You need this if</strong> someone tells you a model &ldquo;won&rsquo;t fit&rdquo; or &ldquo;needs a bigger GPU&rdquo;.</p>
+
+    <div class="key-idea" id="key-idea">
+      <span class="label">The key idea</span>
+      <p>A model is a very large file of numbers. To run it, the whole file has to sit in fast memory. Its size decides what hardware can run it at all.</p>
+    </div>
+
+    <figure class="visual" id="fit" aria-label="Six models of different sizes, from 4 billion to 400 billion parameters, and five machines with memory from 128 GB to 2,304 GB. Choosing a model shows how much of each machine's memory it would fill, and whether it fits with room to spare, fits tightly or does not fit.">
+      <p class="instruction js-only" hidden>Choose a model. Each bar below is one machine&rsquo;s memory, and fills to show how much the model takes.</p>
+      <div id="fit-body"></div>
+      <noscript><p class="small muted">This interactive picture needs JavaScript. In words: at 16 bits per number, a 27-billion-parameter model is 54 GB and fits on every machine on the ladder; a 70-billion-parameter model is 140 GB and does not fit on the smallest; a 400-billion-parameter model is 800 GB and fits only on the two rack servers.</p></noscript>
+      <figcaption><strong>What this shows:</strong> a model either fits in a machine&rsquo;s memory or it does not. Size is parameters &times; bits &divide; 8, at 16 bits per number; <a href="10-quantisation.html">module 10</a> shows how to shrink it.</figcaption>
+      <p class="stamp">Memory figures: sources <a href="../sources.html#S9">S9</a>, <a href="../sources.html#S11">S11</a>, <a href="../sources.html#S13">S13</a>, <a href="../sources.html#S16">S16</a>. Checked 13 November 2026. The model sizes are illustrative examples.</p>
+    </figure>
+
+    <h2 id="parameters">Parameters</h2>
+    <p>What a model learned in training is held in its <a class="term" href="../glossary.html#parameter">parameters</a>, also called weights: billions of numbers. Model names usually say how many. &ldquo;27B&rdquo; means 27 billion. Bigger models are generally more capable, and they are always more demanding to run. The examples in the picture run from 4 billion to 400 billion.</p>
+
+    <h2 id="in-memory">The file must sit in memory</h2>
+    <p>Stored on disk, a model is one very large file. To run it, the whole file is loaded into fast <a class="term" href="../glossary.html#memory">memory</a> beside the processor that does the calculations, usually a <a class="term" href="../glossary.html#gpu">GPU</a>. Nothing about the model changes when it is loaded; it is copied into memory as it is.</p>
+    <p>A rough size is easy to work out. Each parameter is normally stored as a 16-<a class="term" href="../glossary.html#bit">bit</a> number, which takes two bytes, so a model needs about two gigabytes (GB) for every billion parameters. A 27B model is about 54 GB. A 400B model is about 800 GB, more than most machines have.</p>
+    <p>If the file does not fit, the model does not run slowly. It does not run in any usable way. That makes memory capacity a pass or fail test, and it is the first thing a technical team checks.</p>
+
+    <h2 id="room-left-over">Room left over</h2>
+    <p>Fitting exactly is not enough. On top of the model, each conversation needs working space for the model&rsquo;s notes on what it has read so far (<a href="07-how-a-response-is-made.html">module 7</a>). That space grows with the length of each conversation and with the number of people using the model at once. As a rule of thumb, this course allows an extra 15%. A model that fits only without that margin is marked &ldquo;tight&rdquo;: it will load, but long conversations or several users may not.</p>
+
+    <div class="decisions" id="decisions">
+      <h2>What this means for your decisions</h2>
+      <ul>
+        <li>&ldquo;Which model?&rdquo; and &ldquo;which hardware?&rdquo; are one question, not two.</li>
+        <li>Memory capacity is a pass/fail gate. Speed comes later (<a href="08-hardware-and-performance.html">module 8</a>).</li>
+        <li>If you are told a model &ldquo;won&rsquo;t fit&rdquo;, the choices are a bigger machine, a smaller model, or the same model stored less precisely (<a href="10-quantisation.html">module 10</a>).</li>
+      </ul>
+    </div>
+
+    <details class="detail" id="detail">
+      <summary>The detail your technical team handles <span class="tag">optional</span></summary>
+      <div class="detail-body">
+        <h3 id="detail-gpu-memory">Why GPU memory specifically</h3>
+        <p>The numbers have to be in memory the GPU can read directly and very quickly. A computer&rsquo;s ordinary memory is usually separate from its GPU&rsquo;s memory, and far slower to reach from the GPU, so having plenty of ordinary memory does not help much.</p>
+        <h3 id="detail-unified">Unified memory</h3>
+        <p>Some machines, including the desk-sized one on the ladder, have a single pool of memory shared by the <a class="term" href="../glossary.html#cpu">CPU</a> and the GPU. That makes a large capacity affordable, at the cost of lower speed than dedicated GPU memory. The deskside workstation has both kinds: 252 GB of fast GPU memory and a further 496 GB of slower memory.</p>
+        <h3 id="detail-splitting">Splitting a model across GPUs</h3>
+        <p>A model too big for one GPU can be divided across several, which is how the rack servers reach their totals: eight GPUs of 141 GB or 288 GB each. The software has to manage the split, and the GPUs need fast links between them.</p>
+        <h3 id="detail-headroom">Headroom for context</h3>
+        <p>The 15% margin used here is a teaching rule of thumb. The real requirement depends on the length of the <a class="term" href="../glossary.html#context-window">context window</a> in use and the number of simultaneous conversations, and for heavy use it can be much more.</p>
+      </div>
+    </details>
+
+    <div class="check" id="check" data-explain="70 billion numbers at 16 bits each is 70 &times; 16 &divide; 8 = 140 GB: two gigabytes for every billion parameters.">
+      <h2>Check your understanding</h2>
+      <fieldset>
+        <legend>A 70-billion-parameter model stored at 16 bits per number needs roughly how much memory?</legend>
+        <label><input type="radio" name="q6"> About 70 GB.</label>
+        <label><input type="radio" name="q6" data-correct> About 140 GB.</label>
+        <label><input type="radio" name="q6"> About 1,120 GB.</label>
+      </fieldset>
+      <details class="answer">
+        <summary>Show the answer</summary>
+        <p>About 140 GB (70 &times; 16 &divide; 8).</p>
+      </details>
+    </div>
+
     <nav class="pager" aria-label="Previous and next module">
       <a class="prev" href="05-improving-results.html"><span>Previous</span>5. Three ways to improve results</a>
       <a class="contents" href="../index.html">Contents</a>
       <a class="next" href="07-how-a-response-is-made.html"><span>Next</span>7. How a response gets made</a>
     </nav>
+
     <footer class="page-footer">
       <p>Figures checked 13 November 2026. <a href="../sources.html">Sources and how prices are shown</a>.</p>
     </footer>
@@ -37,7 +99,9 @@
 </div>
 <script src="../data/modules.js"></script>
 <script src="../data/glossary.js"></script>
-
+<script src="../data/hardware.js"></script>
+<script src="../assets/js/estimate.js"></script>
 <script src="../assets/js/site.js"></script>
+<script src="../assets/js/visuals/m06.js"></script>
 </body>
 </html>

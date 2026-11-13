@@ -21,15 +21,78 @@
     </ul>
   </nav>
   <main id="main">
-    <p class="eyebrow"><span>Module 7</span><span>about 5 minutes</span><span class="part">Part B: Running it</span></p>
+    <p class="eyebrow"><span>Module 7</span><span>about 5 minutes</span><span class="part">Part B: Running it (what a technical team weighs up when AI runs on hardware you control)</span></p>
     <h1>How a response gets made</h1>
     <p class="need"><strong>You need this if</strong> you want to understand why AI sometimes pauses before answering, and why long conversations cost more.</p>
-    <p class="part-note">This module has not been built yet.</p>
+    <p class="relies"><strong>Relies on</strong> <a href="01-what-is-an-llm.html">module 1</a> (text is handled as tokens) and <a href="06-what-a-model-is.html">module 6</a> (a model is a block of numbers held in memory).</p>
+
+    <div class="key-idea" id="key-idea">
+      <span class="label">The key idea</span>
+      <p>A response has two phases. First the model reads your whole prompt in one go (fast). Then it writes the answer one token at a time (slower). It keeps notes on what it has read, the KV cache, so it never has to re-read.</p>
+    </div>
+
+    <figure class="visual" id="timeline" aria-label="An animated timeline of one response. In phase one, prompt processing, all the prompt's tokens are read together and a notepad, the KV cache, gains one line per token. The end of this phase is the time to first token. In phase two, token generation, answer tokens appear one at a time; each needs one sweep of the model's weights and adds one line to the notepad. Two timeline bars compare the response with the KV cache and without it: without it, the whole prompt is re-read for every new token and the response takes far longer.">
+      <p class="instruction js-only" hidden>Press Play. Then change the prompt length, or switch the KV cache off, and play again.</p>
+      <div id="timeline-body"></div>
+      <noscript><p class="small muted">This interactive picture needs JavaScript. It shows a prompt being read in one sweep, then an answer being written one token at a time, with a notepad (the KV cache) gaining a line for every token read or written.</p></noscript>
+      <figcaption><strong>What this shows:</strong> reading the prompt is one quick sweep; writing the answer takes one sweep of the weights per token. The notepad is why the model never has to read the prompt twice.</figcaption>
+      <p class="stamp"><span class="illus">Illustrative.</span> The animation is not to scale, each tile stands for one token, and &ldquo;KV cache off&rdquo; is shown only to make the point: real systems always use it. The two speeds quoted are measured: source <a href="../sources.html#S24">S24</a>, checked 13 November 2026.</p>
+    </figure>
+
+    <h2 id="two-phases">Two phases, two numbers</h2>
+    <p>When you send a prompt, the model first reads all of it. This phase, <a class="term" href="../glossary.html#prompt-processing">prompt processing</a>, handles every <a class="term" href="../glossary.html#token">token</a> of the prompt together. Then comes <a class="term" href="../glossary.html#token-generation">token generation</a>: the model writes its answer one token after another, and each new token needs a full pass through the model&rsquo;s weights.</p>
+    <p>You feel these as two different numbers. <a class="term" href="../glossary.html#time-to-first-token">Time to first token</a> is the wait before anything appears. <a class="term" href="../glossary.html#tokens-per-second">Tokens per second</a> is how fast the answer then arrives. On one desk-sized machine, a 27-billion-parameter model read prompts at about 1,900 tokens per second and wrote at about 8 <span class="srcref">(<a href="../sources.html#S24">S24</a>)</span>. At those speeds a 4,000-token document is read in about two seconds, while a 500-token answer takes about a minute.</p>
+
+    <h2 id="limits">What limits each phase</h2>
+    <p>Reading is done in parallel, so it is limited by raw computing power: how many calculations the processor can do at once. Writing is one token after another, so it is limited by how quickly the weights can be read out of memory, again and again. <a href="08-hardware-and-performance.html">Module 8</a> builds on this difference.</p>
+
+    <h2 id="kv-cache">The notes: the KV cache</h2>
+    <p>As it reads, the model keeps notes on every token. These notes are the <a class="term" href="../glossary.html#kv-cache">KV cache</a>, and they mean the model never has to re-read the conversation for each new token. Switch the cache off in the picture to see what that saves.</p>
+    <p>The notes take memory, and they grow with the length of the conversation. When a provider can reuse the notes for a prompt it has seen before, that is <a class="term" href="../glossary.html#prompt-caching">prompt caching</a>, and it is why cached input is priced lower.</p>
+
+    <div class="decisions" id="decisions">
+      <h2>What this means for your decisions</h2>
+      <ul>
+        <li>Long documents and long conversations cost more and need more memory, even if the answer is short.</li>
+        <li>&ldquo;It&rsquo;s slow&rdquo; has two different causes. Ask which: slow to start, or slow to write.</li>
+        <li>Agents (<a href="03-chat-vs-agent.html">module 3</a>) re-send a growing conversation at every step, so caching matters a great deal for their cost.</li>
+      </ul>
+    </div>
+
+    <details class="detail" id="detail">
+      <summary>The detail your technical team handles <span class="tag">optional</span></summary>
+      <div class="detail-body">
+        <h3 id="detail-kv">What K and V stand for</h3>
+        <p>K and V are &ldquo;keys&rdquo; and &ldquo;values&rdquo;, two sets of numbers that the model&rsquo;s attention mechanism calculates for every token it reads. Later tokens are compared against the stored keys to decide which earlier values matter, which is why keeping them saves recalculating the whole conversation.</p>
+        <h3 id="detail-terms">Prefill and decode</h3>
+        <p>Engineers call prompt processing &ldquo;prefill&rdquo; and token generation &ldquo;decode&rdquo;. A benchmark that reports only one of the two speeds tells half the story.</p>
+        <h3 id="detail-scaling">How cache memory scales</h3>
+        <p>The cache holds an entry for every token of every conversation in progress. Its size therefore scales with the length of the context in use and with the number of simultaneous conversations. For a busy service it can rival the size of the model itself.</p>
+        <h3 id="detail-limit">The context window as a memory limit</h3>
+        <p>A model has a maximum <a class="term" href="../glossary.html#context-window">context window</a> it was built for, but the practical limit on a given machine is often lower, set by how much memory is left for the cache once the model is loaded.</p>
+      </div>
+    </details>
+
+    <div class="check" id="check" data-explain="The KV cache holds the model&rsquo;s notes on everything it has already read, so each new token needs only one more step, not a fresh read of the whole conversation.">
+      <h2>Check your understanding</h2>
+      <fieldset>
+        <legend>Why is the KV cache used?</legend>
+        <label><input type="radio" name="q7"> To store the model&rsquo;s weights more compactly.</label>
+        <label><input type="radio" name="q7" data-correct> So the model does not re-process the whole conversation for every new token.</label>
+        <label><input type="radio" name="q7"> To save your conversations for training future models.</label>
+      </fieldset>
+      <details class="answer">
+        <summary>Show the answer</summary>
+        <p>So the model does not re-process the whole conversation for every new token.</p>
+      </details>
+    </div>
+
     <nav class="pager" aria-label="Previous and next module">
       <a class="prev" href="06-what-a-model-is.html"><span>Previous</span>6. What a model physically is</a>
       <a class="contents" href="../index.html">Contents</a>
       <a class="next" href="08-hardware-and-performance.html"><span>Next</span>8. Hardware and performance</a>
     </nav>
+
     <footer class="page-footer">
       <p>Figures checked 13 November 2026. <a href="../sources.html">Sources and how prices are shown</a>.</p>
     </footer>
@@ -37,7 +100,7 @@
 </div>
 <script src="../data/modules.js"></script>
 <script src="../data/glossary.js"></script>
-
 <script src="../assets/js/site.js"></script>
+<script src="../assets/js/visuals/m07.js"></script>
 </body>
 </html>

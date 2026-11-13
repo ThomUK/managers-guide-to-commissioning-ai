@@ -4,7 +4,7 @@ A visual training course on LLMs and agentic AI for managers. Static HTML, CSS a
 vanilla JavaScript: no framework, no build step, no external requests. The repository
 root is the published site. `SPEC.md` is the specification it is built from.
 
-Status: under construction. Part A (modules 1 to 5) is built; modules 6 to 11 are placeholders.
+Status: under construction. Modules 1 to 8 are built; modules 9 to 11 are placeholders.
 
 ## Preview locally
 
