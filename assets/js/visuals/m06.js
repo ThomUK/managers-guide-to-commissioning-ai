@@ -24,9 +24,27 @@
     seg.appendChild(el("label", {}, [input, m === FRONTIER ? "2,000B (frontier scale, assumed)" : m + "B"]));
   });
   picker.appendChild(seg);
+  /* Precision: 16-bit is how models are normally published; 8 and 4 are quantised (module 10). */
+  var QUANT = {
+    16: "",
+    8: "Quantised to 8 bits: half the size. Generally very close to the original in quality.",
+    4: "Quantised to 4 bits: a quarter of the size. Generally a small loss of quality."
+  };
+  var precision = el("fieldset", { style: "border:0;padding:0;margin:.7em 0 0" }, [
+    el("legend", { "class": "vis-title", style: "font-weight:700;padding:0", text: "Each number stored in" })
+  ]);
+  var pseg = el("div", { "class": "seg" });
+  [[16, "16 bits (original)"], [8, "8 bits"], [4, "4 bits"]].forEach(function (o) {
+    var input = el("input", { type: "radio", name: "bits", value: String(o[0]) });
+    if (o[0] === BITS) input.checked = true;
+    input.addEventListener("change", function () { BITS = o[0]; draw(); });
+    pseg.appendChild(el("label", {}, [input, o[1]]));
+  });
+  precision.appendChild(pseg);
   var sum = el("p", { "class": "readout", role: "status" });
   var list = el("ol", { "class": "machines" });
   host.appendChild(picker);
+  host.appendChild(precision);
   host.appendChild(sum);
   host.appendChild(list);
 
@@ -56,8 +74,9 @@
     var size = E.sizeGb(chosen, BITS);
     sum.textContent = "";
     sum.appendChild(document.createTextNode(chosen.toLocaleString("en-GB") + " billion parameters × " + BITS + " bits ÷ 8 = " + E.showGb(size)));
+    if (QUANT[BITS]) sum.appendChild(el("span", { "class": "small", style: "display:block;margin-top:.3em", text: QUANT[BITS] }));
     if (chosen === FRONTIER) sum.appendChild(el("span", { "class": "small", style: "display:block;margin-top:.3em", text:
-      "An assumption for illustration: the makers of the leading hosted models do not publish their sizes. One copy at this size is beyond every machine here, and a vendor runs many copies at once to serve its customers."
+      "An assumption for illustration: the makers of the leading hosted models do not publish their sizes. A vendor also runs many copies at once to serve its customers."
     }));
     rows.forEach(function (row) {
       var mem = row.rung.memory.gb, f = E.fit(size, mem), pct = Math.min(100, size / mem * 100);
