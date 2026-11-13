@@ -61,7 +61,7 @@
       var py = 95 - pipeH / 2;
       s.appendChild(svg("rect", { x: 134, y: py, width: 104, height: pipeH, "class": "seg-write" }));
       if (fit !== "no" && pipeH >= 5) s.appendChild(svg("line", { x1: 136, y1: 95, x2: 236, y2: 95, "class": "flow" }));
-      s.appendChild(txt(186, 46, "Memory bandwidth", 11, "", "middle"));
+      s.appendChild(txt(186, 46, "Memory bandwidth", 10, "", "middle"));
       s.appendChild(txt(186, 60, st.cpu ? "tens of GB/s" : bw.toLocaleString("en-GB") + " GB/s", 11, "svg-muted", "middle"));
       if (spills && !st.cpu) s.appendChild(txt(186, 140, "(slower memory)", 10, "svg-muted", "middle"));
       /* processor: a row of workers */
@@ -98,7 +98,7 @@
     s2.appendChild(txt(70 + 8 * scale + 6, 27, "about 8 tokens/s", 11));
     s2.appendChild(txt(8, 64, "10 users", 12));
     for (var u = 0; u < 10; u++) s2.appendChild(svg("rect", { x: 70 + u * 22, y: 50, width: 21, height: 20, rx: 2, "class": "seg-write" }));
-    s2.appendChild(txt(70, 88, "about 58 tokens/s in total: each block is one user’s share", 11));
+    s2.appendChild(txt(70, 88, "about 58 tokens/s in total (one block per user)", 11));
     batch.appendChild(s2);
   }
 
