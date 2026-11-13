@@ -191,7 +191,7 @@ svg { max-width: 100%; height: auto; display: block; }
 .zone-yours { background-color: var(--yours-bg); border: 2px solid var(--yours-line); }
 .zone-theirs {
   background-color: var(--theirs-bg); border: 2px dashed var(--theirs-line);
-  background-image: repeating-linear-gradient(135deg, transparent 0 7px, color-mix(in srgb, var(--theirs-line) 22%, transparent) 7px 8px);
+  background-image: repeating-linear-gradient(135deg, transparent 0 7px, color-mix(in srgb, var(--theirs-line) 12%, transparent) 7px 8px);
 }
 .zone-mixed {
   border: 2px dashed var(--theirs-line);

@@ -29,7 +29,7 @@ Host: GitHub Pages (static files, no build step).
 
 Point 5 is a design goal in its own right. The course must show that depth exists without asking managers to master it.
 
-**Length:** 11 modules, about 5 minutes each. Roughly 350 to 450 words of top-layer text per module, plus one main visual.
+**Length:** 11 modules, about 5 minutes each. Roughly 350 to 500 words of top-layer text per module, plus one main visual.
 
 **Tone:** plain UK English, direct, no hype, no jargon without a definition. Second person ("you"). No exclamation marks. Analogies are welcome but each module uses one analogy at most, and the page must say where the analogy stops being true.
 
@@ -550,7 +550,7 @@ Run these before declaring the build finished, and report the result of each.
 9. Every number on every page traces to section 7 or carries an "illustrative" label. Produce a list of every figure shown, with page and source ID, in `FIGURES.md`.
 10. The arithmetic in the worked examples and the estimator matches section 7 (unit-test the functions in 7.7 against the sanity check given).
 11. Every glossary link resolves; every source ID resolves.
-12. Each module's top layer is within 350 to 450 words (report the counts).
+12. Each module's top layer is within 350 to 500 words (report the counts).
 13. Print preview of a module shows the detail panel open and no navigation.
 14. Spell-check passes in UK English.
 

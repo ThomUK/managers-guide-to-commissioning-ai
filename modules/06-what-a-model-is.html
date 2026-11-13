@@ -44,13 +44,13 @@
     <h2 id="in-memory">The file must sit in memory</h2>
     <p>Stored on disk, a model is one very large file. To run it, the whole file is loaded into fast <a class="term" href="../glossary.html#memory">memory</a> beside the processor that does the calculations, usually a <a class="term" href="../glossary.html#gpu">GPU</a>.</p>
     <p>A rough size is easy to work out. Each parameter is normally stored as a 16-<a class="term" href="../glossary.html#bit">bit</a> number, which takes two bytes, so a model needs about two gigabytes (GB) for every billion parameters. A 27B model is about 54 GB.</p>
-    <p>If the file does not fit, the model does not run in any usable way.</p>
+    <p>If the file does not fit, the model does not run slowly. It does not run in any usable way. That makes memory capacity a pass or fail test, and it is the first thing a technical team checks.</p>
     <p>The file can be shrunk. <a class="term" href="../glossary.html#quantisation">Quantisation</a> stores each number in fewer bits, 8 or 4 in place of 16, so a model that did not fit may then fit, at some cost in quality. Try it in the picture; <a href="10-quantisation.html">module 10</a> explains the trade.</p>
     <p>An ordinary office computer fails the memory test for all but the smallest models. It has perhaps 32 GB of memory, and it is ordinary memory, not GPU memory, so even a model that fits writes slowly (<a href="08-hardware-and-performance.html">module 8</a>). A single desk-sized AI computer, the first rung of the ladder, is in practice the entry point for running useful models yourself.</p>
     <p>At the other end are the leading hosted models. Their makers do not publish sizes, so the last option in the picture is an assumption. At that scale, stored at 16 bits, one copy is too big for the largest machine on the ladder, and a vendor runs many copies at once. That is why those models live in data centres, not offices.</p>
 
     <h2 id="room-left-over">Room left over</h2>
-    <p>Fitting exactly is not enough. On top of the model, each conversation needs working space for the model&rsquo;s notes on what it has read so far (<a href="07-how-a-response-is-made.html">module 7</a>). As a rule of thumb, this course allows an extra 15%. A model that fits only without that margin is marked &ldquo;tight&rdquo;: it will load, but long conversations or several users may not.</p>
+    <p>Fitting exactly is not enough. On top of the model, each conversation needs working space for the model&rsquo;s notes on what it has read so far (<a href="07-how-a-response-is-made.html">module 7</a>). That space grows with the length of each conversation and with the number of people using the model at once. As a rule of thumb, this course allows an extra 15%. A model that fits only without that margin is marked &ldquo;tight&rdquo;: it will load, but long conversations or several users may not.</p>
 
     <div class="decisions" id="decisions">
       <h2>What this means for your decisions</h2>
