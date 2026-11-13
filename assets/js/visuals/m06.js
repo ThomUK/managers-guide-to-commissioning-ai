@@ -27,8 +27,12 @@
   host.appendChild(sum);
   host.appendChild(list);
 
+  /* A reference point below the ladder. ILLUSTRATIVE: 32 GB is a typical figure, not a sourced one. */
+  var OFFICE = { ordinary: true, name: "Ordinary office computer (not built for AI)",
+    memory: { gb: 32, shown: "32 GB" }, memoryLabel: "32 GB of ordinary memory (slow; not GPU memory)" };
+
   /* Build each machine row once, then update it, so the fill can animate. */
-  var rows = H.rungs.map(function (r) {
+  var rows = [OFFICE].concat(H.rungs).map(function (r) {
     var fill = el("span", { "class": "fill" }), head = el("span", { "class": "headroom", title: "15% working space" });
     var bar = el("div", { "class": "membar", "aria-hidden": "true" }, [fill, head]);
     if (r.memory.fastGb) {
@@ -38,7 +42,8 @@
     }
     var result = el("div", { "class": "result" });
     list.appendChild(el("li", {}, [
-      el("div", { "class": "name" }, [el("strong", { text: r.n + ". " + r.name }), el("span", { text: r.memory.shown + " of memory" })]),
+      el("div", { "class": "name" }, [el("strong", { text: r.ordinary ? r.name : r.n + ". " + r.name + (r.n === 1 ? " (the practical entry point)" : "") }),
+        el("span", { text: r.memoryLabel || r.memory.shown + " of memory" })]),
       bar, result
     ]));
     return { rung: r, fill: fill, head: head, result: result };
@@ -60,6 +65,7 @@
       if (row.rung.memory.fastGb && f !== "no") {
         note += size > row.rung.memory.fastGb ? " It spills past the dashed line into this machine’s slower memory." : " It sits within the fast GPU memory, left of the dashed line.";
       }
+      if (row.rung.ordinary && f !== "no") note += " But this is ordinary memory, not GPU memory, so the model would write slowly.";
       row.result.appendChild(document.createTextNode(note));
     });
   }
