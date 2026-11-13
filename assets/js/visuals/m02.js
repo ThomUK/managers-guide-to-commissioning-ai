@@ -155,19 +155,43 @@
     if (id === "own") panel.appendChild(ladder());
   }
 
-  /* ---------- Make the table rows selectable ---------- */
-  var buttons = [];
+  /* ---------- Make the table rows selectable ----------
+     Wide screens: the panel sits under the grid and one arrangement is always selected.
+     Narrow screens: an accordion. The panel opens directly under the card that was tapped,
+     and all cards start closed so the four-way comparison is seen first. */
+  var mq = window.matchMedia("(max-width: 699px)");
+  var home = document.createComment("panel home");
+  panel.parentNode.insertBefore(home, panel);
+  var panelRow = el("tr", { "class": "panel-row" }, [el("td", { colspan: "5" })]);
+  var rows = {}, selected = null;
   fig.querySelectorAll("tr[data-arr]").forEach(function (tr) {
-    var th = tr.querySelector("th");
-    var btn = el("button", { type: "button", "class": "row-btn", "aria-pressed": "false", text: th.textContent });
+    var th = tr.querySelector("th"), id = tr.getAttribute("data-arr");
+    var btn = el("button", { type: "button", "class": "row-btn", "aria-expanded": "false" }, [
+      el("span", { text: th.textContent }), el("span", { "class": "cue", text: "Costs and data path" })
+    ]);
     th.textContent = "";
     th.appendChild(btn);
-    buttons.push(btn);
-    btn.addEventListener("click", function () { select(tr.getAttribute("data-arr"), btn); });
+    rows[id] = { tr: tr, btn: btn };
+    btn.addEventListener("click", function () { select(id, true); });
   });
-  function select(id, btn) {
-    buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b === btn)); });
-    renderPanel(id);
+  function place() {
+    if (mq.matches && selected) {
+      rows[selected].tr.parentNode.insertBefore(panelRow, rows[selected].tr.nextSibling);
+      panelRow.firstChild.appendChild(panel);
+    } else {
+      if (panelRow.parentNode) panelRow.parentNode.removeChild(panelRow);
+      home.parentNode.insertBefore(panel, home.nextSibling);
+    }
   }
-  if (buttons.length) select("chat", buttons[0]);
+  function select(id, byUser) {
+    if (mq.matches && selected === id) id = null;
+    selected = id;
+    Object.keys(rows).forEach(function (k) { rows[k].btn.setAttribute("aria-expanded", String(k === id)); });
+    if (id) renderPanel(id); else panel.textContent = "";
+    place();
+    if (id && byUser && mq.matches) rows[id].btn.scrollIntoView({ block: "nearest" });
+  }
+  function onResize() { if (!mq.matches && !selected) select("chat"); else place(); }
+  if (mq.addEventListener) mq.addEventListener("change", onResize); else if (mq.addListener) mq.addListener(onResize);
+  if (!mq.matches) select("chat");
 })();
